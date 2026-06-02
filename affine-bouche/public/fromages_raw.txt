@@ -1,0 +1,181 @@
+<USER_REQUEST>
+{
+  "fromages": [
+    {
+      "id": 1,
+      "nom": "Camembert de Normandie",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache cru",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 11,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 35
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 6
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 90
+        }
+      },
+      "ventilation": "Faible",
+      "retournement": "Quotidien les 10 premiers jours",
+      "notes": "AOP. Croûte blanche duveteuse, cœur coulant à maturité"
+    },
+    {
+      "id": 2,
+      "nom": "Brie de Meaux",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache cru",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 13
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 28,
+          "max": 42
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 6
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 90
+        }
+      },
+      "ventilation": "Faible",
+      "retournement": "2x/semaine",
+      "notes": "AOP. Le plus grand des bries, arôme de noisette"
+    },
+    {
+      "id": 3,
+      "nom": "Brie de Melun",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache cru",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 13
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 96
+        },
+        "duree_jours": {
+          "min": 28,
+          "max": 35
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 
+<truncated 45215 bytes>
+
+        }
+      },
+      "ventilation": "Modérée",
+      "retournement": "Quotidien les 7 premiers jours",
+      "notes": "AOP. Berry, pyramide tronquée saupoudrée de cendre"
+    },
+    {
+      "id": 65,
+      "nom": "Selles-sur-Cher",
+      "categorie": "Chèvre",
+      "lait": "Chèvre cru",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 94
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 21
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 5,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 82,
+          "max": 90
+        }
+      },
+      "ventilation": "Modérée",
+      "retournement": "Quotidien les 7 premiers jours",
+      "notes": "AOP. Sologne, cendre bleue-noire"
+    },
+    {
+      "id": 66,
+      "nom": "Chavignol",
+      "categorie": "Chèvre",
+      "lait": "Chèvre cru",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 5,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 88
+        }
+      },
+      "ventilation": "Modérée",
+      "retournement": "Quotidien les 7 premiers jours",
+      "notes": "Identique au Crottin de Chavignol"
+    },
+    {
+      "id": 67,
+      "nom": "Pélardon",
+      "categorie": "Chèvre",
+      "lait": "Chèvre cru",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          
+<truncated 25195 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

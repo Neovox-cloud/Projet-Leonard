@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Catalogue des fromages importé depuis JSON
+model CheeseProfile {
+  id                      String   @id @default(cuid())
+  nom                     String
+  categorie               String?
+  lait                    String?
+  
+  // Phase d'affinage
+  affinageTempMin         Float?
+  affinageTempMax         Float?
+  affinageHygroMin        Float?
+  affinageHygroMax        Float?
+  affinageDureeMin        Int?
+  affinageDureeMax        Int?
+  
+  // Phase de stabilisation
+  stabilisationTempMin    Float?
+  stabilisationTempMax    Float?
+  stabilisationHygroMin   Float?
+  stabilisationHygroMax   Float?
+  
+  // Entretien
+  ventilation             String?
+  retournement            String?
+  notes                   String?
+  
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+// Statut simulé de la cave (Mock)
+model MockCave {
+  id               String   @id @default(cuid())
+  currentTemp      Float    // Température actuelle en °C
+  currentHumidity  Float    // Humidité actuelle en %
+  fanActive        Boolean  @default(false)
+  coolerActive     Boolean  @default(false)
+  humidifierActive Boolean  @default(false)
+  updatedAt        DateTime @updatedAt
+}

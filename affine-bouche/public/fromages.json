@@ -1,0 +1,2050 @@
+{
+  "fromages": [
+    {
+      "id": 1,
+      "nom": "Camembert de Normandie",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 2,
+      "nom": "Brie de Meaux",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 3,
+      "nom": "Brie de Melun",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 4,
+      "nom": "Coulommiers",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 5,
+      "nom": "Chaource",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 6,
+      "nom": "Neufchâtel",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 7,
+      "nom": "Brillat-Savarin",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 8,
+      "nom": "Saint-Marcellin",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 9,
+      "nom": "Saint-Félicien",
+      "categorie": "Pâte molle à croûte fleurie",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 45
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 10,
+      "nom": "Époisses",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 11,
+      "nom": "Munster",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 12,
+      "nom": "Livarot",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 13,
+      "nom": "Maroilles",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 14,
+      "nom": "Pont-l'Évêque",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 15,
+      "nom": "Langres",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 16,
+      "nom": "Vacherin Mont d'Or",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 17,
+      "nom": "Trou du Cru",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 18,
+      "nom": "Boulette d'Avesnes",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 19,
+      "nom": "Soumaintrain",
+      "categorie": "Pâte molle à croûte lavée",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 92,
+          "max": 98
+        },
+        "duree_jours": {
+          "min": 21,
+          "max": 60
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 20,
+      "nom": "Cantal",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 21,
+      "nom": "Salers",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 22,
+      "nom": "Reblochon",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 23,
+      "nom": "Saint-Nectaire",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 24,
+      "nom": "Morbier",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 25,
+      "nom": "Tomme de Savoie",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 26,
+      "nom": "Ossau-Iraty",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 27,
+      "nom": "Laguiole",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 28,
+      "nom": "Bethmale",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 29,
+      "nom": "Gaperon",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 30,
+      "nom": "Tome des Bauges",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 31,
+      "nom": "Raclette",
+      "categorie": "Pâte pressée non cuite",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 85,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 60,
+          "max": 180
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 32,
+      "nom": "Comté",
+      "categorie": "Pâte pressée cuite",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 120,
+          "max": 720
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 33,
+      "nom": "Beaufort",
+      "categorie": "Pâte pressée cuite",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 120,
+          "max": 720
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 34,
+      "nom": "Abondance",
+      "categorie": "Pâte pressée cuite",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 120,
+          "max": 720
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 35,
+      "nom": "Gruyère",
+      "categorie": "Pâte pressée cuite",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 120,
+          "max": 720
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 36,
+      "nom": "Emmental",
+      "categorie": "Pâte pressée cuite",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 120,
+          "max": 720
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 37,
+      "nom": "Appenzeller",
+      "categorie": "Pâte pressée cuite",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 120,
+          "max": 720
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 38,
+      "nom": "Meule du Jura",
+      "categorie": "Pâte pressée cuite",
+      "lait": "Vache",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 12,
+          "max": 16
+        },
+        "hygrometrie_pct": {
+          "min": 88,
+          "max": 92
+        },
+        "duree_jours": {
+          "min": 120,
+          "max": 720
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 39,
+      "nom": "Roquefort",
+      "categorie": "Pâte persillée",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 30,
+          "max": 90
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 40,
+      "nom": "Bleu d'Auvergne",
+      "categorie": "Pâte persillée",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 30,
+          "max": 90
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 41,
+      "nom": "Fourme d'Ambert",
+      "categorie": "Pâte persillée",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 30,
+          "max": 90
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 42,
+      "nom": "Bleu de Gex",
+      "categorie": "Pâte persillée",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 30,
+          "max": 90
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 43,
+      "nom": "Fourme de Montbrison",
+      "categorie": "Pâte persillée",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 30,
+          "max": 90
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 44,
+      "nom": "Bleu des Causses",
+      "categorie": "Pâte persillée",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 30,
+          "max": 90
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 45,
+      "nom": "Bleu du Vercors-Sassenage",
+      "categorie": "Pâte persillée",
+      "lait": "Vache/Brebis",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 8,
+          "max": 12
+        },
+        "hygrometrie_pct": {
+          "min": 90,
+          "max": 95
+        },
+        "duree_jours": {
+          "min": 30,
+          "max": 90
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 46,
+      "nom": "Crottin de Chavignol",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 47,
+      "nom": "Rocamadour",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 48,
+      "nom": "Sainte-Maure de Touraine",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 49,
+      "nom": "Valençay",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 50,
+      "nom": "Selles-sur-Cher",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 51,
+      "nom": "Chabichou du Poitou",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 52,
+      "nom": "Pélardon",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 53,
+      "nom": "Picodon",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 54,
+      "nom": "Banon",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 55,
+      "nom": "Mâconnais",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 56,
+      "nom": "Charolais",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 57,
+      "nom": "Cabécou",
+      "categorie": "Chèvre",
+      "lait": "Chèvre",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 90
+        },
+        "duree_jours": {
+          "min": 10,
+          "max": 30
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 58,
+      "nom": "Mozzarella",
+      "categorie": "Pâte filée",
+      "lait": "Vache/Buffle",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        },
+        "duree_jours": {
+          "min": 5,
+          "max": 15
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 59,
+      "nom": "Burrata",
+      "categorie": "Pâte filée",
+      "lait": "Vache/Buffle",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        },
+        "duree_jours": {
+          "min": 5,
+          "max": 15
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 60,
+      "nom": "Provolone",
+      "categorie": "Pâte filée",
+      "lait": "Vache/Buffle",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        },
+        "duree_jours": {
+          "min": 5,
+          "max": 15
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 61,
+      "nom": "Scamorza",
+      "categorie": "Pâte filée",
+      "lait": "Vache/Buffle",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        },
+        "duree_jours": {
+          "min": 5,
+          "max": 15
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    },
+    {
+      "id": 62,
+      "nom": "Caciocavallo",
+      "categorie": "Pâte filée",
+      "lait": "Vache/Buffle",
+      "affinage": {
+        "temperature_celsius": {
+          "min": 10,
+          "max": 14
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        },
+        "duree_jours": {
+          "min": 5,
+          "max": 15
+        }
+      },
+      "stabilisation": {
+        "temperature_celsius": {
+          "min": 4,
+          "max": 8
+        },
+        "hygrometrie_pct": {
+          "min": 80,
+          "max": 85
+        }
+      },
+      "ventilation": "Automatique",
+      "retournement": "Hebdomadaire",
+      "notes": "Généré automatiquement pour le catalogue étendu"
+    }
+  ]
+}
