@@ -45,7 +45,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
               <button className="w-full sm:w-auto px-8 py-4 bg-amber-900 hover:bg-amber-800 text-white rounded-full font-semibold text-lg transition-all shadow-xl shadow-amber-900/20 flex items-center justify-center gap-2 group">
-                Acheter maintenant - 1250 €
+                Acheter maintenant - 500 €
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <span className="text-sm text-slate-500 font-medium">TTC, Livraison offerte en 48h.</span>
