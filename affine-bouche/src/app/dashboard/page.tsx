@@ -14,9 +14,9 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-950 p-6 md:p-12">
+    <div className="min-h-screen bg-slate-50 p-6 md:p-12 text-slate-900">
       <div className="max-w-7xl mx-auto">
-        <Link href="/" className="inline-flex items-center text-gray-400 hover:text-white mb-8 transition-colors">
+        <Link href="/" className="inline-flex items-center text-slate-650 hover:text-amber-900 mb-8 transition-colors font-medium">
           <ArrowLeft className="w-5 h-5 mr-2" />
           Retour à la boutique
         </Link>
