@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ThermometerSun, Droplets, Wind, ShieldCheck, ChevronRight, ShoppingCart } from 'lucide-react';
+import ProductDescription from '@/components/ProductDescription';
 
 export default function Home() {
   return (
@@ -62,6 +63,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Product Description Section */}
+      <ProductDescription />
 
       {/* Features Section */}
       <section id="features" className="py-24 bg-white relative">
