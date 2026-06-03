@@ -170,36 +170,36 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
   const now = Date.now();
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10">
+    <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10 text-slate-900">
       
       {/* Colonne de Gauche */}
       <div className="xl:col-span-4 space-y-6 flex flex-col">
-        <div className="relative z-50 bg-gray-800/60 backdrop-blur-md p-6 rounded-2xl border border-gray-700/50 shadow-xl">
-          <h3 className="text-xl font-bold mb-4 text-gray-100 flex items-center gap-2">
-            <span className="text-amber-500">⚙️</span> Compartiment {activeCompartmentId ? `#${activeCompartmentId}` : ''}
+        <div className="relative z-50 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 className="text-xl font-bold mb-4 text-slate-900 flex items-center gap-2">
+            <span className="text-amber-800">⚙️</span> Compartiment {activeCompartmentId ? `#${activeCompartmentId}` : ''}
           </h3>
           
           {!activeCompartmentId || !activeComp ? (
-            <div className="text-gray-400 text-center py-8 bg-gray-900/50 rounded-xl border border-dashed border-gray-700">
+            <div className="text-slate-500 text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">
               <span className="text-4xl block mb-2">👈</span>
               Sélectionnez un compartiment dans la grille pour configurer son affinage.
             </div>
           ) : (
             <>
               <div className="mb-6 relative">
-                <label className="block text-sm font-medium text-gray-400 mb-2">Fromage en affinage</label>
+                <label className="block text-sm font-medium text-slate-500 mb-2">Fromage en affinage</label>
                 <div 
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white cursor-pointer hover:border-amber-500 transition-colors flex justify-between items-center"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-slate-800 cursor-pointer hover:border-amber-900/50 transition-colors flex justify-between items-center"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
                   <span>{activeCheese ? activeCheese.nom : 'Vide (Emplacement libre)'}</span>
-                  <span className={`text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}>▼</span>
+                  <span className={`text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}>▼</span>
                 </div>
                 
                 {isDropdownOpen && (
-                  <div className="absolute z-50 w-full mt-2 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl max-h-64 overflow-y-auto custom-scrollbar">
+                  <div className="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-lg shadow-xl max-h-64 overflow-y-auto custom-scrollbar">
                     <div 
-                      className="px-6 py-3 cursor-pointer text-gray-400 hover:text-white hover:bg-red-900/40 text-sm border-b border-gray-800"
+                      className="px-6 py-3 cursor-pointer text-slate-500 hover:text-slate-800 hover:bg-slate-50 text-sm border-b border-slate-100"
                       onClick={() => {
                         assignCheese(activeCompartmentId, null);
                         setIsDropdownOpen(false);
@@ -209,13 +209,13 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
                     </div>
                     {Object.entries(cheesesByCategory).map(([category, cheeses]) => (
                       <div key={category}>
-                        <div className="bg-gray-800 text-amber-500/80 text-xs font-bold uppercase tracking-wider px-4 py-2 sticky top-0 z-10">
+                        <div className="bg-slate-50 text-amber-900 text-xs font-bold uppercase tracking-wider px-4 py-2 sticky top-0 z-10 border-b border-slate-100">
                           {category}
                         </div>
                         {cheeses.map(c => (
                           <div 
                             key={c.id} 
-                            className={`px-6 py-3 cursor-pointer transition-colors text-sm ${activeComp?.selectedCheeseId === c.id ? 'bg-gray-700/50 text-amber-400 font-medium' : 'text-gray-300 hover:bg-gray-800'}`}
+                            className={`px-6 py-3 cursor-pointer transition-colors text-sm ${activeComp?.selectedCheeseId === c.id ? 'bg-amber-50 text-amber-900 font-bold' : 'text-slate-700 hover:bg-slate-50'}`}
                             onClick={() => {
                               assignCheese(activeCompartmentId, c.id);
                               setIsDropdownOpen(false);
@@ -233,28 +233,28 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
               {/* Préférence d'Affinage */}
               {activeCheese && (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Degré d'affinage souhaité</label>
-                  <div className="grid grid-cols-3 gap-2 bg-gray-900 p-1 rounded-lg border border-gray-700">
+                  <label className="block text-sm font-medium text-slate-500 mb-2">Degré d'affinage souhaité</label>
+                  <div className="grid grid-cols-3 gap-2 bg-slate-50 p-1 rounded-lg border border-slate-200">
                     <button 
                       onClick={() => changePreference(activeCompartmentId, 'jeune')}
-                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'jeune' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
+                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'jeune' ? 'bg-amber-900 text-white shadow-sm' : 'text-slate-655 hover:text-slate-900'}`}
                     >
                       Jeune
                     </button>
                     <button 
                       onClick={() => changePreference(activeCompartmentId, 'moyen')}
-                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'moyen' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
+                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'moyen' ? 'bg-amber-900 text-white shadow-sm' : 'text-slate-655 hover:text-slate-900'}`}
                     >
                       À point
                     </button>
                     <button 
                       onClick={() => changePreference(activeCompartmentId, 'vieux')}
-                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'vieux' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
+                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'vieux' ? 'bg-amber-900 text-white shadow-sm' : 'text-slate-655 hover:text-slate-900'}`}
                     >
                       Corsé
                     </button>
                   </div>
-                  <div className="text-xs text-amber-500/80 mt-2 flex justify-between px-1">
+                  <div className="text-xs text-amber-900 mt-2 flex justify-between px-1 font-bold">
                     <span>Durée cible :</span>
                     <span className="font-mono">{activeComp?.targetDurationDays} jours</span>
                   </div>
@@ -262,14 +262,14 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
               )}
 
               {/* Toggle Mode Auto */}
-              <div className="flex items-center justify-between p-4 bg-gray-900 rounded-lg border border-gray-700 mb-6">
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200 mb-6">
                 <div>
-                  <p className="font-semibold text-white">Mode Automatique</p>
-                  <p className="text-xs text-gray-400">Régulation intelligente</p>
+                  <p className="font-semibold text-slate-800 text-sm">Mode Automatique</p>
+                  <p className="text-xs text-slate-500">Régulation intelligente</p>
                 </div>
                 <button 
                   onClick={() => updateCompartment(activeCompartmentId, { isAutoMode: !activeComp.isAutoMode })}
-                  className={`w-14 h-8 rounded-full transition-colors relative ${activeComp.isAutoMode ? 'bg-amber-600' : 'bg-gray-600'}`}
+                  className={`w-14 h-8 rounded-full transition-colors relative ${activeComp.isAutoMode ? 'bg-amber-900' : 'bg-slate-350'}`}
                 >
                   <div className={`w-6 h-6 bg-white rounded-full absolute top-1 transition-transform ${activeComp.isAutoMode ? 'translate-x-7' : 'translate-x-1'}`}></div>
                 </button>
@@ -277,11 +277,11 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
 
               {/* Actionneurs */}
               <div>
-                 <label className="block text-sm font-medium text-gray-400 mb-2">Contrôles manuels</label>
+                 <label className="block text-sm font-medium text-slate-500 mb-2">Contrôles manuels</label>
                  <div className="grid grid-cols-3 gap-2">
-                    <button onClick={() => toggleControl('coolerActive')} disabled={activeComp.isAutoMode} className={`p-2 rounded-lg text-xs font-medium transition-colors ${activeComp.coolerActive ? 'bg-blue-600 text-white' : 'bg-gray-900 text-gray-500 border border-gray-700'} ${activeComp.isAutoMode && 'opacity-50'}`}>Froid</button>
-                    <button onClick={() => toggleControl('humidifierActive')} disabled={activeComp.isAutoMode} className={`p-2 rounded-lg text-xs font-medium transition-colors ${activeComp.humidifierActive ? 'bg-teal-600 text-white' : 'bg-gray-900 text-gray-500 border border-gray-700'} ${activeComp.isAutoMode && 'opacity-50'}`}>Brumisateur</button>
-                    <button onClick={() => toggleControl('fanActive')} disabled={activeComp.isAutoMode} className={`p-2 rounded-lg text-xs font-medium transition-colors ${activeComp.fanActive ? 'bg-indigo-600 text-white' : 'bg-gray-900 text-gray-500 border border-gray-700'} ${activeComp.isAutoMode && 'opacity-50'}`}>Ventilation</button>
+                    <button onClick={() => toggleControl('coolerActive')} disabled={activeComp.isAutoMode} className={`p-2 rounded-lg text-xs font-bold transition-colors ${activeComp.coolerActive ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-slate-50 text-slate-400 border border-slate-200'} ${activeComp.isAutoMode && 'opacity-50'}`}>Froid</button>
+                    <button onClick={() => toggleControl('humidifierActive')} disabled={activeComp.isAutoMode} className={`p-2 rounded-lg text-xs font-bold transition-colors ${activeComp.humidifierActive ? 'bg-teal-100 text-teal-800 border border-teal-200' : 'bg-slate-50 text-slate-400 border border-slate-200'} ${activeComp.isAutoMode && 'opacity-50'}`}>Brumisateur</button>
+                    <button onClick={() => toggleControl('fanActive')} disabled={activeComp.isAutoMode} className={`p-2 rounded-lg text-xs font-bold transition-colors ${activeComp.fanActive ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-slate-50 text-slate-400 border border-slate-200'} ${activeComp.isAutoMode && 'opacity-50'}`}>Ventilation</button>
                  </div>
               </div>
             </>
@@ -289,20 +289,20 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
         </div>
 
         {activeCheese && activeComp && (
-          <div className="bg-gray-800/60 backdrop-blur-md p-6 rounded-2xl border border-gray-700/50 shadow-xl">
-            <h3 className="text-lg font-bold mb-4 text-gray-100 flex items-center gap-2">
-              <span className="text-yellow-500">🎯</span> Objectifs du compartiment
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 className="text-lg font-bold mb-4 text-slate-900 flex items-center gap-2">
+              <span className="text-yellow-600">🎯</span> Objectifs du compartiment
             </h3>
             <div className="space-y-3 text-sm">
-              <div className="flex justify-between border-b border-gray-700 pb-2">
-                <span className="text-gray-400">Température</span>
-                <span className="font-mono text-white">{activeCheese.affinageTempMin}°C - {activeCheese.affinageTempMax}°C</span>
+              <div className="flex justify-between border-b border-slate-100 pb-2">
+                <span className="text-slate-500 font-medium">Température</span>
+                <span className="font-mono text-slate-800 font-bold">{activeCheese.affinageTempMin}°C - {activeCheese.affinageTempMax}°C</span>
               </div>
-              <div className="flex justify-between border-b border-gray-700 pb-2">
-                <span className="text-gray-400">Hygrométrie</span>
-                <span className="font-mono text-white">{activeCheese.affinageHygroMin}% - {activeCheese.affinageHygroMax}%</span>
+              <div className="flex justify-between border-b border-slate-100 pb-2">
+                <span className="text-slate-500 font-medium">Hygrométrie</span>
+                <span className="font-mono text-slate-800 font-bold">{activeCheese.affinageHygroMin}% - {activeCheese.affinageHygroMax}%</span>
               </div>
-              <p className="text-amber-200/80 italic text-xs mt-2">{activeCheese.notes}</p>
+              <p className="text-amber-900 bg-amber-50/50 p-2.5 rounded-lg border border-amber-900/10 italic text-xs mt-2">{activeCheese.notes}</p>
             </div>
           </div>
         )}
@@ -310,13 +310,13 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
 
       {/* Colonne de Droite : La Grille */}
       <div className="xl:col-span-8">
-        <div className="bg-gray-800/60 backdrop-blur-md p-8 rounded-2xl border border-gray-700/50 shadow-xl">
-           <h2 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-400">
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+           <h2 className="text-2xl font-bold mb-6 text-amber-900">
              Cave d'Affinage (Quadrillage)
            </h2>
            
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-              <div className="absolute inset-0 border-[8px] border-amber-900/40 rounded-xl pointer-events-none z-0"></div>
+              <div className="absolute inset-0 border-[8px] border-amber-900/10 rounded-xl pointer-events-none z-0"></div>
               
               {compartments.map(comp => {
                 const cheese = comp.selectedCheeseId ? initialCheeses.find(c => c.id === comp.selectedCheeseId) : null;
@@ -338,10 +338,10 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
                   <div 
                     key={comp.id}
                     onClick={() => setActiveCompartmentId(comp.id)}
-                    className={`relative z-10 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-300 flex flex-col ${isActive ? 'border-amber-500 scale-[1.02] shadow-[0_0_20px_rgba(245,158,11,0.2)]' : 'border-gray-700/50 hover:border-gray-500'} bg-gray-900 p-5 min-h-[220px]`}
+                    className={`relative z-10 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-300 flex flex-col ${isActive ? 'border-amber-900 scale-[1.02] shadow-sm' : 'border-slate-200 hover:border-slate-350'} bg-slate-50 p-5 min-h-[220px]`}
                   >
                     <div className="flex justify-between items-start mb-3">
-                      <h4 className="text-gray-500 font-bold uppercase text-xs tracking-wider">Zone {comp.id}</h4>
+                      <h4 className="text-slate-400 font-bold uppercase text-xs tracking-wider">Zone {comp.id}</h4>
                       <div className="flex gap-1">
                         {comp.coolerActive && <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>}
                         {comp.humidifierActive && <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>}
@@ -349,40 +349,40 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
                     </div>
 
                     {!cheese ? (
-                      <div className="flex-1 flex flex-col items-center justify-center text-gray-600 hover:text-amber-500 transition-colors">
+                      <div className="flex-1 flex flex-col items-center justify-center text-slate-400 hover:text-amber-900 transition-colors">
                         <span className="text-3xl mb-1">+</span>
                         <span className="text-sm font-medium">Ajouter un fromage</span>
                       </div>
                     ) : (
                       <>
-                        <h5 className="text-white font-semibold text-lg leading-tight mb-2 truncate">{cheese.nom}</h5>
+                        <h5 className="text-slate-800 font-bold text-lg leading-tight mb-2 truncate">{cheese.nom}</h5>
                         
                         <div className="grid grid-cols-2 gap-3 mb-4">
-                          <div className={`p-2 rounded-lg border ${isTempOk ? 'border-green-500/30 bg-green-500/10' : 'border-red-500/30 bg-red-500/10'}`}>
-                            <div className="text-[10px] text-gray-400 uppercase mb-1">Temp</div>
-                            <div className="text-lg font-mono text-white">{comp.currentTemp.toFixed(1)}°</div>
+                          <div className={`p-2 rounded-lg border ${isTempOk ? 'border-green-200 bg-green-50/60 text-green-800 font-bold' : 'border-red-200 bg-red-50/60 text-red-800 font-bold'}`}>
+                            <div className="text-[9px] text-slate-500 uppercase mb-0.5 font-bold">Temp</div>
+                            <div className="text-lg font-mono">{comp.currentTemp.toFixed(1)}°</div>
                           </div>
-                          <div className={`p-2 rounded-lg border ${isHygroOk ? 'border-green-500/30 bg-green-500/10' : 'border-red-500/30 bg-red-500/10'}`}>
-                            <div className="text-[10px] text-gray-400 uppercase mb-1">Hygro</div>
-                            <div className="text-lg font-mono text-white">{comp.currentHumidity.toFixed(1)}%</div>
+                          <div className={`p-2 rounded-lg border ${isHygroOk ? 'border-green-200 bg-green-50/60 text-green-800 font-bold' : 'border-red-200 bg-red-50/60 text-red-800 font-bold'}`}>
+                            <div className="text-[9px] text-slate-500 uppercase mb-0.5 font-bold">Hygro</div>
+                            <div className="text-lg font-mono">{comp.currentHumidity.toFixed(1)}%</div>
                           </div>
                         </div>
 
                         {/* Barre de Progression (Chrono) */}
                         <div className="mt-auto">
                            {isFinished ? (
-                             <div className="w-full text-center bg-green-500/20 text-green-400 text-xs font-bold py-1.5 rounded uppercase border border-green-500/50 animate-pulse">
+                             <div className="w-full text-center bg-green-100 text-green-800 text-xs font-bold py-1.5 rounded uppercase border border-green-200 animate-pulse">
                                Prêt à déguster
                              </div>
                            ) : (
                              <>
-                               <div className="flex justify-between text-[10px] text-gray-400 mb-1 font-mono uppercase">
+                               <div className="flex justify-between text-[10px] text-slate-500 mb-1 font-mono font-bold uppercase">
                                  <span>J {elapsedDays.toFixed(1)}</span>
                                  <span>{comp.targetDurationDays} J</span>
                                </div>
-                               <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                               <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                                  <div 
-                                   className="bg-gradient-to-r from-amber-500 to-yellow-400 h-1.5 rounded-full transition-all duration-1000 ease-linear"
+                                   className="bg-gradient-to-r from-amber-800 to-amber-600 h-1.5 rounded-full transition-all duration-1000 ease-linear"
                                    style={{ width: `${progressPct}%` }}
                                  ></div>
                                </div>
