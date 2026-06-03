@@ -104,7 +104,7 @@ const MODULES_DATABASE: Record<ModuleType, ModuleSpecs> = {
     heightCm: 60,
     capacityDesc: 'Capacité : 12-18 Fromages / 12 Bouteilles / Viande 5kg',
     description: 'Volume généreux pour les grands amateurs ou créateurs. Permet l\'affinage de pièces massives ou la maturation de viandes grâce à son crochet de suspension intégré.',
-    gradient: 'from-slate-100 to-white border-slate-250',
+    gradient: 'from-slate-100 to-white border-slate-200',
     textColor: 'text-slate-900',
     features: ['Crochet inox de suspension', 'Grille de maturation réglable', 'Déshumidification active']
   }
@@ -413,12 +413,12 @@ export default function Configurateur() {
 
             {/* General FAQs/Features info */}
             <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 mt-12">
-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-950 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-955 flex items-center justify-center shrink-0">
                 <Sparkles className="w-6 h-6" />
               </div>
               <div className="space-y-1">
                 <h4 className="font-bold text-slate-900 text-sm">Garantie d'Affinage L'Affine Bouche</h4>
-                <p className="text-xs text-slate-650 leading-relaxed font-medium">
+                <p className="text-xs text-slate-655 leading-relaxed font-medium">
                   Tous nos blocs de cave profitent de la technologie d'ajustement moléculaire. Température stable au 10ème de degré près et maintien autonome d'une hygrométrie optimale comprise entre 80 et 95% sans raccordement d'eau requis.
                 </p>
               </div>
@@ -442,7 +442,7 @@ export default function Configurateur() {
                 </div>
 
                 {/* Stacking zone */}
-                <div className="relative border-b-8 border-slate-350 bg-slate-100/60 rounded-3xl p-6 min-h-[380px] flex flex-col-reverse items-center justify-start gap-1.5 overflow-hidden">
+                <div className="relative border-b-8 border-slate-300 bg-slate-100/60 rounded-3xl p-6 min-h-[380px] flex flex-col-reverse items-center justify-start gap-1.5 overflow-hidden">
                   
                   {/* Internal ambient light glow */}
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-500/5 to-transparent pointer-events-none"></div>
@@ -463,7 +463,7 @@ export default function Configurateur() {
                       <div
                         key={mod.id}
                         onClick={() => setActiveModuleId(mod.id)}
-                        className={`w-full max-w-xs ${heightClass} rounded-2xl border-2 bg-gradient-to-r ${spec.gradient} ${isActive ? 'ring-4 ring-amber-900/10 border-amber-900/80 shadow-md scale-[1.02]' : 'border-slate-200 hover:border-slate-350'} relative cursor-pointer transition-all duration-300 flex flex-col justify-between p-4 group select-none`}
+                        className={`w-full max-w-xs ${heightClass} rounded-2xl border-2 bg-gradient-to-r ${spec.gradient} ${isActive ? 'ring-4 ring-amber-900/10 border-amber-900/80 shadow-md scale-[1.02]' : 'border-slate-200 hover:border-slate-300'} relative cursor-pointer transition-all duration-300 flex flex-col justify-between p-4 group select-none`}
                       >
                         {/* Micro amber LED line at the top of each module */}
                         <div className="absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
@@ -514,7 +514,7 @@ export default function Configurateur() {
                                   e.stopPropagation();
                                   handleRemoveModule(mod.id);
                                 }}
-                                className="text-slate-500 hover:text-red-600 p-1 rounded bg-slate-100 hover:bg-red-50 transition-all"
+                                className="text-slate-500 hover:text-red-600 p-1 rounded bg-slate-100 hover:bg-red-55 transition-all"
                                 title="Retirer ce bloc"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -576,7 +576,7 @@ export default function Configurateur() {
             <div className="lg:col-span-7 flex flex-col justify-between space-y-8">
               
               {/* Module selection & controls */}
-              <div className="bg-white border border-slate-250 p-8 rounded-3xl space-y-8 shadow-sm">
+              <div className="bg-white border border-slate-200 p-8 rounded-3xl space-y-8 shadow-sm">
                 
                 {/* Visual state selector for family modules */}
                 {format === 'famille' && (
@@ -602,7 +602,7 @@ export default function Configurateur() {
                           <span className="text-amber-900 text-sm font-bold font-mono">150 €</span>
                         </div>
                         <h4 className="font-bold text-slate-800 text-xs group-hover:text-amber-900 transition-colors">Affinage S</h4>
-                        <p className="text-[10px] text-slate-650 mt-1 line-clamp-2">Capacité 3-5 fromages. Idéal pour tester ou isoler.</p>
+                        <p className="text-[10px] text-slate-655 mt-1 line-clamp-2">Capacité 3-5 fromages. Idéal pour tester ou isoler.</p>
                       </button>
 
                       {/* Moyen module */}
@@ -615,7 +615,7 @@ export default function Configurateur() {
                           <span className="text-amber-900 text-sm font-bold font-mono">250 €</span>
                         </div>
                         <h4 className="font-bold text-slate-800 text-xs group-hover:text-amber-900 transition-colors">Affinage M</h4>
-                        <p className="text-[10px] text-slate-650 mt-1 line-clamp-2">Le best-seller. 6-10 fromages ou 6 bouteilles.</p>
+                        <p className="text-[10px] text-slate-655 mt-1 line-clamp-2">Le best-seller. 6-10 fromages ou 6 bouteilles.</p>
                       </button>
 
                       {/* Grand module */}
@@ -628,7 +628,7 @@ export default function Configurateur() {
                           <span className="text-amber-900 text-sm font-bold font-mono">350 €</span>
                         </div>
                         <h4 className="font-bold text-slate-800 text-xs group-hover:text-amber-900 transition-colors">Affinage L</h4>
-                        <p className="text-[10px] text-slate-650 mt-1 line-clamp-2">12-18 fromages, 12 bouteilles, maturation viande.</p>
+                        <p className="text-[10px] text-slate-655 mt-1 line-clamp-2">12-18 fromages, 12 bouteilles, maturation viande.</p>
                       </button>
                     </div>
                   </div>
@@ -671,7 +671,7 @@ export default function Configurateur() {
                           {/* Cheese */}
                           <button
                             onClick={() => handleUpdateUsage(activeModule.id, 'fromage')}
-                            className={`p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-2 ${activeModule.usage === 'fromage' ? 'bg-amber-100/50 border-amber-900/60 text-amber-900 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350'}`}
+                            className={`p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-2 ${activeModule.usage === 'fromage' ? 'bg-amber-100/50 border-amber-900/60 text-amber-900 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'}`}
                           >
                             <span className="text-xl">🧀</span>
                             <span className="text-xs">Fromage</span>
@@ -680,7 +680,7 @@ export default function Configurateur() {
                           {/* Wine */}
                           <button
                             onClick={() => handleUpdateUsage(activeModule.id, 'vin')}
-                            className={`p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-2 ${activeModule.usage === 'vin' ? 'bg-amber-100/50 border-amber-900/60 text-amber-900 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350'}`}
+                            className={`p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-2 ${activeModule.usage === 'vin' ? 'bg-amber-100/50 border-amber-900/60 text-amber-900 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'}`}
                           >
                             <span className="text-xl">🍷</span>
                             <span className="text-xs">Vin</span>
@@ -689,7 +689,7 @@ export default function Configurateur() {
                           {/* Meat */}
                           <button
                             onClick={() => handleUpdateUsage(activeModule.id, 'viande')}
-                            className={`p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-2 ${activeModule.usage === 'viande' ? 'bg-amber-100/50 border-amber-900/60 text-amber-900 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350'}`}
+                            className={`p-4 rounded-xl border transition-all flex flex-col items-center justify-center gap-2 ${activeModule.usage === 'viande' ? 'bg-amber-100/50 border-amber-900/60 text-amber-900 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'}`}
                           >
                             <span className="text-xl">🥩</span>
                             <span className="text-xs">Maturation</span>
@@ -719,7 +719,7 @@ export default function Configurateur() {
               <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-slate-100/50 border border-slate-200 p-6 rounded-3xl">
                 <button
                   onClick={handleReset}
-                  className="w-full sm:w-auto px-6 py-3 border border-slate-250 hover:border-slate-350 text-slate-700 hover:text-slate-900 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Changer de Format
@@ -746,7 +746,7 @@ export default function Configurateur() {
             <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
             <div className="text-center space-y-2">
-              <span className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-950 flex items-center justify-center mx-auto mb-4">
+              <span className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-955 flex items-center justify-center mx-auto mb-4">
                 <ShieldCheck className="w-6 h-6" />
               </span>
               <h2 className="text-2xl font-extrabold text-slate-900">Récapitulatif de votre Cave</h2>
@@ -800,12 +800,12 @@ export default function Configurateur() {
               
               <div className="flex justify-between items-baseline pt-1">
                 <span className="text-sm font-bold text-slate-850">Prix Total (TTC)</span>
-                <span className="text-3xl font-black text-amber-950 font-mono">{totalPricing} €</span>
+                <span className="text-3xl font-black text-amber-955 font-mono">{totalPricing} €</span>
               </div>
             </div>
 
             {/* Business summary terms */}
-            <div className="bg-amber-50/50 border border-amber-900/10 p-4 rounded-xl text-[10px] text-slate-650 space-y-2 leading-relaxed font-medium">
+            <div className="bg-amber-50/50 border border-amber-900/10 p-4 rounded-xl text-[10px] text-slate-655 space-y-2 leading-relaxed font-medium">
               <p>💡 <strong>Note sur l'installation :</strong> Les modules de la cave s'empilent via notre système de couplage magnétique sécurisé <i>MagLink</i>. Aucun vissage requis. La centrale gère la répartition électrique automatiquement via un unique cordon branché sur votre prise de secteur.</p>
               <p>🔒 <strong>Garantie constructeur :</strong> Matériel garanti 5 ans pièces et main d'œuvre. Retour gratuit sous 30 jours.</p>
             </div>
@@ -814,7 +814,7 @@ export default function Configurateur() {
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4">
               <button
                 onClick={() => setStep('configuration')}
-                className="w-full sm:w-auto px-6 py-3 border border-slate-250 hover:border-slate-350 text-slate-600 hover:text-slate-900 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5"
+                className="w-full sm:w-auto px-6 py-3 border border-slate-200 hover:border-slate-300 text-slate-650 hover:text-slate-900 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Modifier la configuration
