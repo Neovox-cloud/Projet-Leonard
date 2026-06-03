@@ -175,7 +175,7 @@ export default function ProductDescription() {
       <div className="max-w-7xl mx-auto">
 
         {/* ── Badge ingénieurs ── */}
-        <div className="flex justify-center mb-10">
+        <div id="ecam-engineers" className="flex justify-center mb-10">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-amber-300/60 bg-white shadow-md shadow-amber-100">
             <GraduationCap className="w-5 h-5 text-amber-700 shrink-0" />
             <span className="text-sm font-semibold text-amber-800 tracking-wide">

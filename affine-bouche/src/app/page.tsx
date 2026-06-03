@@ -12,7 +12,7 @@ export default function Home() {
             L'Affine Bouche
           </div>
           <div className="flex gap-6 items-center">
-            <Link href="#features" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">Caractéristiques</Link>
+            <Link href="#ecam-engineers" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">Caractéristiques</Link>
             <Link href="/configurateur" className="text-sm font-medium text-amber-750 hover:text-amber-900 transition">
               Configurateur
             </Link>

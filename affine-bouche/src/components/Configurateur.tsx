@@ -17,19 +17,23 @@ import {
   Disc,
   Layers3,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Building,
+  Mail,
+  Phone,
+  User,
+  MessageSquare,
+  FileText
 } from 'lucide-react';
 import Link from 'next/link';
 
 // Definitions matching implementation plan
-export type FormatType = 'famille' | 'compact';
+export type FormatType = 'famille' | 'compact' | 'professionnel';
 
 export type ModuleType = 
   | 'maitre'           
   | 'tout-en-un'       
-  | 'affinage-petit'   
-  | 'affinage-moyen'   
-  | 'affinage-grand';  
+  | 'affinage-standard';  
 
 export type ChamberUsage = 'fromage' | 'vin' | 'viande';
 
@@ -57,7 +61,7 @@ const MODULES_DATABASE: Record<ModuleType, ModuleSpecs> = {
     type: 'maitre',
     name: 'Bloc Spécial Maître',
     price: 350,
-    heightCm: 15,
+    heightCm: 40,
     capacityDesc: 'Centrale de Contrôle (Aucun stockage)',
     description: 'Le cerveau de votre installation modulaire. Intègre régulateur thermique, brumisateur d\'eau centralisé, capteurs moléculaires d\'odeurs, écran de contrôle tactile OLED et connectivité Wi-Fi 6.',
     gradient: 'from-amber-950 via-amber-900 to-amber-950 border-amber-800/30',
@@ -68,59 +72,59 @@ const MODULES_DATABASE: Record<ModuleType, ModuleSpecs> = {
     type: 'tout-en-un',
     name: 'Bloc Spécial Tout-en-un',
     price: 500,
-    heightCm: 50,
+    heightCm: 40,
     capacityDesc: 'Capacité : 5-8 Fromages / 6 Bouteilles',
     description: 'La solution compacte autonome. Intègre à la fois la centrale de contrôle et une chambre d\'affinage modulable de taille idéale. Non extensible.',
     gradient: 'from-amber-50 to-white border-amber-900/10',
     textColor: 'text-amber-900',
     features: ['Centrale intégrée', 'Chambre mono-zone réglable', 'Porte vitrée anti-UV', 'Éclairage LED doux']
   },
-  'affinage-petit': {
-    type: 'affinage-petit',
-    name: 'Module Affinage - S',
-    price: 150,
-    heightCm: 30,
-    capacityDesc: 'Capacité : 3-5 Fromages (ex. Saint-Nectaire, Tomme)',
-    description: 'Chambre d\'affinage ultra-compacte idéale pour débuter ou isoler un fromage de caractère (type Époisses ou Munster) de vos autres crus.',
-    gradient: 'from-slate-50 to-white border-slate-200',
-    textColor: 'text-slate-800',
-    features: ['Zone 100% hermétique', 'Plage 8°C à 16°C', 'Fixation magnétique sécurisée']
-  },
-  'affinage-moyen': {
-    type: 'affinage-moyen',
-    name: 'Module Affinage - M',
+  'affinage-standard': {
+    type: 'affinage-standard',
+    name: 'Module d\'Affinage Standard',
     price: 250,
-    heightCm: 45,
+    heightCm: 40,
     capacityDesc: 'Capacité : 6-10 Fromages ou 6 Bouteilles de Vin',
-    description: 'Le module standard et le plus populaire. Idéal pour conserver vos fromages à point ou stocker vos bouteilles de vins en vieillissement optimal.',
+    description: 'Le module standard et universel. Idéal pour conserver vos fromages à point, stocker vos bouteilles de vins ou faire maturer de la viande.',
     gradient: 'from-slate-50 via-white to-slate-50 border-slate-200',
     textColor: 'text-slate-800',
     features: ['Plateau en bois de hêtre', 'Sonde d\'humidité dédiée', 'Double vitrage thermique']
-  },
-  'affinage-grand': {
-    type: 'affinage-grand',
-    name: 'Module Affinage - L',
-    price: 350,
-    heightCm: 60,
-    capacityDesc: 'Capacité : 12-18 Fromages / 12 Bouteilles / Viande 5kg',
-    description: 'Volume généreux pour les grands amateurs ou créateurs. Permet l\'affinage de pièces massives ou la maturation de viandes grâce à son crochet de suspension intégré.',
-    gradient: 'from-slate-100 to-white border-slate-200',
-    textColor: 'text-slate-900',
-    features: ['Crochet inox de suspension', 'Grille de maturation réglable', 'Déshumidification active']
   }
 };
 
 export default function Configurateur() {
   const [format, setFormat] = useState<FormatType | null>(null);
   const [modules, setModules] = useState<ConfiguredModule[]>([]);
-  const [step, setStep] = useState<'format-selection' | 'configuration' | 'summary'>('format-selection');
+  const [step, setStep] = useState<'format-selection' | 'configuration' | 'summary' | 'devis-professionnel'>('format-selection');
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  // Devis form states
+  const [devisForm, setDevisForm] = useState({
+    entreprise: '',
+    contactName: '',
+    email: '',
+    phone: '',
+    secteur: 'Crémerie / Fromagerie',
+    capacite: '100-250 kg',
+    description: ''
+  });
+  const [devisSubmitted, setDevisSubmitted] = useState(false);
 
   // Helper trigger notification
   const notify = (message: string, type: 'success' | 'error' = 'success') => {
     setShowNotification({ message, type });
     setTimeout(() => setShowNotification(null), 4000);
+  };
+
+  const handleDevisSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!devisForm.entreprise || !devisForm.contactName || !devisForm.email || !devisForm.phone) {
+      notify('Veuillez remplir tous les champs obligatoires.', 'error');
+      return;
+    }
+    setDevisSubmitted(true);
+    notify('Votre demande de devis a bien été envoyée !', 'success');
   };
 
   // Select format
@@ -134,7 +138,8 @@ export default function Configurateur() {
         customName: 'Mon Espace Tout-en-un'
       }]);
       setActiveModuleId('compact-default');
-    } else {
+      setStep('configuration');
+    } else if (selectedFormat === 'famille') {
       // Famille initialization with Master block at base level
       setModules([{
         id: 'maitre-default',
@@ -142,9 +147,17 @@ export default function Configurateur() {
         usage: 'fromage' 
       }]);
       setActiveModuleId('maitre-default');
+      setStep('configuration');
+    } else if (selectedFormat === 'professionnel') {
+      setModules([]);
+      setActiveModuleId(null);
+      setStep('devis-professionnel');
     }
-    setStep('configuration');
-    notify(`Format ${selectedFormat === 'famille' ? 'Famille (Modulaire)' : 'Compact (Tout-en-un)'} sélectionné.`);
+    notify(`Format ${
+      selectedFormat === 'famille' ? 'Famille (Modulaire)' 
+      : selectedFormat === 'compact' ? 'Compact (Tout-en-un)' 
+      : 'Professionnel (Sur Devis)'
+    } sélectionné.`);
   };
 
   // Reset configurator
@@ -153,6 +166,16 @@ export default function Configurateur() {
     setModules([]);
     setActiveModuleId(null);
     setStep('format-selection');
+    setDevisSubmitted(false);
+    setDevisForm({
+      entreprise: '',
+      contactName: '',
+      email: '',
+      phone: '',
+      secteur: 'Crémerie / Fromagerie',
+      capacite: '100-250 kg',
+      description: ''
+    });
   };
 
   // Add module (Family format only)
@@ -270,22 +293,37 @@ export default function Configurateur() {
             >
               1. Choix du Format
             </button>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <button 
-              disabled={!format}
-              onClick={() => setStep('configuration')}
-              className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${step === 'configuration' ? 'bg-amber-900 text-white shadow-md' : 'text-slate-600 hover:text-amber-900 hover:bg-slate-100'}`}
-            >
-              2. Studio d'Ajustement
-            </button>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <button 
-              disabled={modules.length === 0}
-              onClick={() => setStep('summary')}
-              className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${step === 'summary' ? 'bg-amber-900 text-white shadow-md' : 'text-slate-600 hover:text-amber-900 hover:bg-slate-100'}`}
-            >
-              3. Panier & Devis
-            </button>
+            {format !== 'professionnel' ? (
+              <>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <button 
+                  disabled={!format}
+                  onClick={() => setStep('configuration')}
+                  className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${step === 'configuration' ? 'bg-amber-900 text-white shadow-md' : 'text-slate-600 hover:text-amber-900 hover:bg-slate-100'}`}
+                >
+                  2. Studio d'Ajustement
+                </button>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <button 
+                  disabled={modules.length === 0}
+                  onClick={() => setStep('summary')}
+                  className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${step === 'summary' ? 'bg-amber-900 text-white shadow-md' : 'text-slate-600 hover:text-amber-900 hover:bg-slate-100'}`}
+                >
+                  3. Panier & Devis
+                </button>
+              </>
+            ) : (
+              <>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                <button 
+                  disabled={!format}
+                  onClick={() => setStep('devis-professionnel')}
+                  className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all ${step === 'devis-professionnel' ? 'bg-amber-900 text-white shadow-md' : 'text-slate-600 hover:text-amber-900 hover:bg-slate-100'}`}
+                >
+                  2. Demande de Devis
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -302,12 +340,12 @@ export default function Configurateur() {
           <div className="space-y-12 max-w-5xl mx-auto">
             <div className="text-center space-y-4">
               <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight sm:text-4xl">Sélectionnez la base de votre Cave</h2>
-              <p className="text-lg text-slate-650 max-w-2xl mx-auto font-medium">
+              <p className="text-lg text-slate-655 max-w-2xl mx-auto font-medium">
                 Chaque fromage, vin ou pièce de viande requiert des conditions spécifiques. Sélectionnez le format physique de cave qui vous correspond.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
               {/* Option 1: Modular Family */}
               <div 
                 onClick={() => handleSelectFormat('famille')}
@@ -364,7 +402,7 @@ export default function Configurateur() {
                 onClick={() => handleSelectFormat('compact')}
                 className="group relative bg-white border border-slate-200 hover:border-amber-900/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
               >
-                <div className="absolute top-5 right-5 bg-slate-100 text-slate-650 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
+                <div className="absolute top-5 right-5 bg-slate-100 text-slate-655 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
                   Tout-en-un Clé en main
                 </div>
                 
@@ -405,6 +443,57 @@ export default function Configurateur() {
                   </div>
                   <div className="px-5 py-2.5 bg-amber-900 group-hover:bg-amber-800 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
                     Configurer
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Option 3: Professionnel */}
+              <div 
+                onClick={() => handleSelectFormat('professionnel')}
+                className="group relative bg-white border border-slate-200 hover:border-amber-900/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
+              >
+                <div className="absolute top-5 right-5 bg-amber-955 border border-amber-800 text-amber-200 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
+                  Sur Devis Uniquement
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-955 text-amber-300 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Building className="w-7 h-7" />
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-2xl font-bold text-amber-900 group-hover:text-amber-700 transition-colors mb-2">
+                      Format 3 : Cave "Professionnelle"
+                    </h3>
+                    <p className="text-slate-600 text-sm leading-relaxed">
+                      Conçue spécifiquement pour les restaurateurs, crémiers-fromagers, bouchers et vignerons. Une solution sur-mesure de grande capacité adaptée à vos contraintes d'espace et de volume.
+                    </p>
+                  </div>
+
+                  <ul className="space-y-3 pt-2">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                      <span className="text-amber-600 font-bold mt-0.5">✓</span>
+                      <span><strong>Volumes industriels :</strong> Stockage et affinage optimisés de 50 à +500 kg.</span>
+                    </li>
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                      <span className="text-amber-600 font-bold mt-0.5">✓</span>
+                      <span><strong>Régulations Pro :</strong> Contrôle tactile multi-zones d'une précision chirurgicale.</span>
+                    </li>
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                      <span className="text-amber-600 font-bold mt-0.5">✓</span>
+                      <span><strong>Étude technique personnalisée :</strong> Installation et configuration par nos experts.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="pt-8 mt-8 border-t border-slate-100 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-500 block uppercase font-semibold">Tarification</span>
+                    <span className="text-2xl font-black text-amber-955 font-bold">Sur Devis</span>
+                  </div>
+                  <div className="px-5 py-2.5 bg-amber-950 group-hover:bg-amber-900 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
+                    Demander un Devis
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
@@ -452,12 +541,8 @@ export default function Configurateur() {
                     const spec = MODULES_DATABASE[mod.type];
                     const isActive = activeModuleId === mod.id;
 
-                    let heightClass = 'h-36';
-                    if (mod.type === 'maitre') heightClass = 'h-16';
-                    if (mod.type === 'tout-en-un') heightClass = 'h-48';
-                    if (mod.type === 'affinage-petit') heightClass = 'h-24';
-                    if (mod.type === 'affinage-moyen') heightClass = 'h-36';
-                    if (mod.type === 'affinage-grand') heightClass = 'h-44';
+                    let heightClass = 'h-32';
+                    if (mod.type === 'maitre') heightClass = 'h-24';
 
                     return (
                       <div
@@ -591,44 +676,21 @@ export default function Configurateur() {
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      {/* Petit module */}
+                    <div className="flex justify-center">
                       <button
-                        onClick={() => handleAddModule('affinage-petit')}
-                        className="bg-slate-50 border border-slate-200 hover:border-amber-900/30 p-4 rounded-2xl text-left transition-all hover:scale-[1.02] group shadow-sm"
+                        onClick={() => handleAddModule('affinage-standard')}
+                        className="w-full bg-slate-50 border border-slate-200 hover:border-amber-900/30 p-5 rounded-2xl text-left transition-all hover:scale-[1.01] group shadow-sm flex items-center justify-between"
                       >
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="px-2 py-0.5 bg-slate-200/60 text-[9px] text-slate-700 font-bold uppercase rounded">Taille S</span>
-                          <span className="text-amber-900 text-sm font-bold font-mono">150 €</span>
+                        <div>
+                          <h4 className="font-bold text-slate-800 text-sm group-hover:text-amber-900 transition-colors flex items-center gap-2">
+                            <Plus className="w-4 h-4 text-amber-900" />
+                            Ajouter un Module d'Affinage Standard (40x40 cm)
+                          </h4>
+                          <p className="text-xs text-slate-655 mt-1">
+                            Capacité universelle de 6-10 fromages, 6 bouteilles ou 3 kg de viande.
+                          </p>
                         </div>
-                        <h4 className="font-bold text-slate-800 text-xs group-hover:text-amber-900 transition-colors">Affinage S</h4>
-                        <p className="text-[10px] text-slate-655 mt-1 line-clamp-2">Capacité 3-5 fromages. Idéal pour tester ou isoler.</p>
-                      </button>
-
-                      {/* Moyen module */}
-                      <button
-                        onClick={() => handleAddModule('affinage-moyen')}
-                        className="bg-slate-50 border border-slate-200 hover:border-amber-900/30 p-4 rounded-2xl text-left transition-all hover:scale-[1.02] group shadow-sm"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="px-2 py-0.5 bg-slate-200/60 text-[9px] text-slate-700 font-bold uppercase rounded">Taille M</span>
-                          <span className="text-amber-900 text-sm font-bold font-mono">250 €</span>
-                        </div>
-                        <h4 className="font-bold text-slate-800 text-xs group-hover:text-amber-900 transition-colors">Affinage M</h4>
-                        <p className="text-[10px] text-slate-655 mt-1 line-clamp-2">Le best-seller. 6-10 fromages ou 6 bouteilles.</p>
-                      </button>
-
-                      {/* Grand module */}
-                      <button
-                        onClick={() => handleAddModule('affinage-grand')}
-                        className="bg-slate-50 border border-slate-200 hover:border-amber-900/30 p-4 rounded-2xl text-left transition-all hover:scale-[1.02] group shadow-sm"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <span className="px-2 py-0.5 bg-slate-200/60 text-[9px] text-slate-700 font-bold uppercase rounded">Taille L</span>
-                          <span className="text-amber-900 text-sm font-bold font-mono">350 €</span>
-                        </div>
-                        <h4 className="font-bold text-slate-800 text-xs group-hover:text-amber-900 transition-colors">Affinage L</h4>
-                        <p className="text-[10px] text-slate-655 mt-1 line-clamp-2">12-18 fromages, 12 bouteilles, maturation viande.</p>
+                        <span className="text-amber-900 text-lg font-bold font-mono shrink-0">250 €</span>
                       </button>
                     </div>
                   </div>
@@ -751,7 +813,7 @@ export default function Configurateur() {
               </span>
               <h2 className="text-2xl font-extrabold text-slate-900">Récapitulatif de votre Cave</h2>
               <p className="text-xs text-slate-500 uppercase tracking-widest font-bold">
-                Format {format === 'famille' ? 'Famille Modulaire' : 'Compact Tout-en-un'}
+                Format {format === 'famille' ? 'Famille Modulaire' : format === 'compact' ? 'Compact Tout-en-un' : 'Professionnel sur Devis'}
               </p>
             </div>
 
@@ -832,6 +894,209 @@ export default function Configurateur() {
               </button>
             </div>
 
+          </div>
+        )}
+
+        {/* ---------------------- STEP: DEVIS PROFESSIONNEL ---------------------- */}
+        {step === 'devis-professionnel' && (
+          <div className="max-w-3xl mx-auto bg-white border border-slate-200 p-8 rounded-3xl space-y-8 shadow-xl relative animate-in fade-in slide-in-from-bottom-5">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div className="text-center space-y-2">
+              <span className="w-12 h-12 rounded-2xl bg-amber-950 text-amber-200 flex items-center justify-center mx-auto mb-4">
+                <Building className="w-6 h-6" />
+              </span>
+              <h2 className="text-2xl font-extrabold text-slate-900">Demande de Devis Cave Professionnelle</h2>
+              <p className="text-xs text-slate-500 uppercase tracking-widest font-bold">
+                Pour les restaurateurs, fromagers et artisans de la gastronomie
+              </p>
+            </div>
+
+            {!devisSubmitted ? (
+              <form onSubmit={handleDevisSubmit} className="space-y-6 pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Entreprise */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                      Nom de l'établissement / entreprise *
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                        <Building className="w-4 h-4" />
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ex: Le Bon Fromage SAS"
+                        value={devisForm.entreprise}
+                        onChange={(e) => setDevisForm({ ...devisForm, entreprise: e.target.value })}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 focus:bg-white text-sm outline-none transition"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Nom du contact */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                      Nom & Prénom du contact *
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                        <User className="w-4 h-4" />
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ex: Jean Dupont"
+                        value={devisForm.contactName}
+                        onChange={(e) => setDevisForm({ ...devisForm, contactName: e.target.value })}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 focus:bg-white text-sm outline-none transition"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                      Adresse Email Professionnelle *
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                        <Mail className="w-4 h-4" />
+                      </span>
+                      <input
+                        type="email"
+                        required
+                        placeholder="Ex: j.dupont@entreprise.fr"
+                        value={devisForm.email}
+                        onChange={(e) => setDevisForm({ ...devisForm, email: e.target.value })}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 focus:bg-white text-sm outline-none transition"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Téléphone */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                      Numéro de Téléphone *
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                        <Phone className="w-4 h-4" />
+                      </span>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="Ex: 06 12 34 56 78"
+                        value={devisForm.phone}
+                        onChange={(e) => setDevisForm({ ...devisForm, phone: e.target.value })}
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 focus:bg-white text-sm outline-none transition"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Secteur d'Activité */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                      Secteur d'activité
+                    </label>
+                    <select
+                      value={devisForm.secteur}
+                      onChange={(e) => setDevisForm({ ...devisForm, secteur: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 focus:bg-white text-sm outline-none transition"
+                    >
+                      <option>Crémerie / Fromagerie</option>
+                      <option>Restauration / Hôtellerie</option>
+                      <option>Boucherie / Charcuterie</option>
+                      <option>Vigneron / Caviste</option>
+                      <option>Épicerie Fine / Distribution</option>
+                      <option>Autre secteur</option>
+                    </select>
+                  </div>
+
+                  {/* Capacité Estimée */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                      Capacité de stockage estimée
+                    </label>
+                    <select
+                      value={devisForm.capacite}
+                      onChange={(e) => setDevisForm({ ...devisForm, capacite: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 focus:bg-white text-sm outline-none transition"
+                    >
+                      <option>De 50 à 100 kg</option>
+                      <option>De 100 à 250 kg</option>
+                      <option>De 250 à 500 kg</option>
+                      <option>Plus de 500 kg (Sur-mesure industriel)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Description du projet */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                    Description de votre projet & besoins spécifiques
+                  </label>
+                  <div className="relative">
+                    <span className="absolute top-3 left-3 text-slate-400">
+                      <MessageSquare className="w-4 h-4" />
+                    </span>
+                    <textarea
+                      rows={4}
+                      placeholder="Décrivez vos contraintes d'espace, les types de produits à affiner (fromages à pâte dure, persillée, charcuterie, etc.), l'intégration souhaitée..."
+                      value={devisForm.description}
+                      onChange={(e) => setDevisForm({ ...devisForm, description: e.target.value })}
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 focus:bg-white text-sm outline-none transition resize-none"
+                    ></textarea>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="w-full sm:w-auto px-6 py-3 border border-slate-200 hover:border-slate-300 text-slate-655 hover:text-slate-900 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Retour aux formats
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-8 py-3.5 bg-amber-950 hover:bg-amber-900 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 group shadow-xl shadow-amber-950/10 text-sm"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Envoyer ma demande de devis
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="text-center py-10 space-y-6">
+                <div className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                  <Check className="w-10 h-10" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-slate-900">Demande reçue avec succès !</h3>
+                  <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+                    Merci pour votre intérêt, <strong>{devisForm.contactName}</strong>. Notre équipe d'ingénieurs-affineurs étudie votre demande pour l'établissement <strong>{devisForm.entreprise}</strong>.
+                  </p>
+                </div>
+                <div className="p-4 bg-amber-50/50 border border-amber-900/10 rounded-2xl max-w-md mx-auto text-xs text-slate-600 leading-normal">
+                  📅 Un conseiller technique vous contactera par email (<strong>{devisForm.email}</strong>) ou par téléphone sous 24h ouvrées pour affiner votre cahier des charges.
+                </div>
+                <div className="pt-4">
+                  <button
+                    onClick={handleReset}
+                    className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition inline-flex items-center gap-2 shadow-lg"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Retour au configurateur
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
