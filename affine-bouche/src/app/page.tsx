@@ -12,13 +12,16 @@ export default function Home() {
           </div>
           <div className="flex gap-6 items-center">
             <Link href="#features" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">Caractéristiques</Link>
-            <Link href="/dashboard" className="text-sm font-medium text-amber-700 hover:text-amber-800 transition">
-              Accès Dashboard (MVP)
+            <Link href="/configurateur" className="text-sm font-medium text-amber-750 hover:text-amber-900 transition">
+              Configurateur
             </Link>
-            <button className="bg-amber-900 hover:bg-amber-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
+            <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">
+              Dashboard (MVP)
+            </Link>
+            <Link href="/configurateur" className="bg-amber-900 hover:bg-amber-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" />
-              Précommander
-            </button>
+              Configurer
+            </Link>
           </div>
         </div>
       </nav>
@@ -43,12 +46,14 @@ export default function Home() {
             <p className="text-xl text-slate-600 leading-relaxed max-w-2xl">
               Découvrez la première cave à fromage intelligente. Un écosystème parfait, contrôlé au dixième de degré, pour sublimer vos meilleurs crus fromagers à domicile.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
-              <button className="w-full sm:w-auto px-8 py-4 bg-amber-900 hover:bg-amber-800 text-white rounded-full font-semibold text-lg transition-all shadow-xl shadow-amber-900/20 flex items-center justify-center gap-2 group">
-                Acheter maintenant - 500 €
+            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+              <Link href="/configurateur" className="w-full sm:w-auto px-8 py-4 bg-amber-900 hover:bg-amber-800 text-white rounded-full font-semibold text-lg transition-all shadow-xl shadow-amber-900/20 flex items-center justify-center gap-2 group text-center">
+                Configurer ma Cave
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <span className="text-sm text-slate-500 font-medium">TTC, Livraison offerte en 48h.</span>
+              </Link>
+              <Link href="/configurateur" className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 text-slate-900 border border-slate-300 rounded-full font-semibold text-lg transition-all text-center">
+                Acheter Tout-en-un - 500 €
+              </Link>
             </div>
           </div>
           <div className="flex-1 relative">
