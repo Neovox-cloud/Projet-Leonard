@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ThermometerSun, Droplets, Wind, ShieldCheck, ChevronRight, ShoppingCart } from 'lucide-react';
 import ProductDescription from '@/components/ProductDescription';
 
@@ -8,9 +9,19 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="text-2xl font-bold tracking-tighter text-amber-900">
-            L'Affine Bouche
-          </div>
+          <Link href="/" className="flex items-center gap-3">
+            <Image 
+              src="/logo.png" 
+              alt="L'Affine Bouche Logo" 
+              width={50} 
+              height={42} 
+              className="object-contain h-10 w-auto"
+              priority
+            />
+            <span className="text-2xl font-bold tracking-tighter text-slate-900">
+              L'Affine Bouche
+            </span>
+          </Link>
           <div className="flex gap-6 items-center">
             <Link href="#ecam-engineers" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">Caractéristiques</Link>
             <Link href="/configurateur" className="text-sm font-medium text-amber-750 hover:text-amber-900 transition">
@@ -59,11 +70,14 @@ export default function Home() {
           </div>
           <div className="flex-1 relative">
             <div className="aspect-square rounded-[3rem] bg-gradient-to-br from-amber-50 to-slate-200 border-8 border-white shadow-2xl relative overflow-hidden flex items-center justify-center">
-              {/* Image Placeholder premium */}
-              <div className="absolute inset-0 bg-amber-900/5 mix-blend-multiply"></div>
-              <div className="w-64 h-80 bg-white rounded-xl shadow-xl transform rotate-3 flex items-center justify-center border border-slate-100">
-                <span className="text-amber-900/40 font-bold text-2xl rotate-[-90deg] tracking-widest uppercase">L'Affine Bouche</span>
-              </div>
+              <Image 
+                src="/diverse_modular_cave.png" 
+                alt="Système de Caves d'Affinage Modulaires L'Affine Bouche" 
+                fill 
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
             </div>
           </div>
         </div>

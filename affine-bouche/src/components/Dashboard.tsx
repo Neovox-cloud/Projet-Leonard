@@ -180,10 +180,33 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
     return () => clearInterval(interval);
   }, [initialCheeses]);
 
+  // Load from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('affine_bouche_compartments');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length === 6) {
+            setCompartments(parsed);
+          }
+        } catch (e) {
+          console.error("Failed to load compartments from localStorage", e);
+        }
+      }
+    }
+  }, []);
+
   // ── 4.3 EVENT HANDLERS ─────────────────────────────────────
 
   const updateCompartment = (id: number, updates: Partial<CompartmentState>) => {
-    setCompartments(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+    setCompartments(prev => {
+      const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('affine_bouche_compartments', JSON.stringify(updated));
+      }
+      return updated;
+    });
   };
 
   const handleContentTypeChange = (id: number, contentType: ContentType) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   ChevronRight, 
   Plus, 
@@ -54,6 +54,7 @@ export interface ConfiguredModule {
   type: ModuleType;
   usage: ChamberUsage;
   customName?: string;
+  column?: number; // 0 (left), 1 (middle), 2 (right)
 }
 
 const MODULES_DATABASE: Record<ModuleType, ModuleSpecs> = {
@@ -111,6 +112,38 @@ export default function Configurateur() {
   });
   const [devisSubmitted, setDevisSubmitted] = useState(false);
 
+  // Read initial format from query params on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const initialFormat = params.get('format');
+      if (initialFormat === 'professionnel') {
+        setFormat('professionnel');
+        setStep('devis-professionnel');
+      } else if (initialFormat === 'compact') {
+        setFormat('compact');
+        setModules([{
+          id: 'compact-default',
+          type: 'tout-en-un',
+          usage: 'fromage',
+          customName: 'Mon Espace Tout-en-un'
+        }]);
+        setActiveModuleId('compact-default');
+        setStep('configuration');
+      } else if (initialFormat === 'famille') {
+        setFormat('famille');
+        setModules([{
+          id: 'maitre-default',
+          type: 'maitre',
+          usage: 'fromage',
+          column: 0
+        }]);
+        setActiveModuleId('maitre-default');
+        setStep('configuration');
+      }
+    }
+  }, []);
+
   // Helper trigger notification
   const notify = (message: string, type: 'success' | 'error' = 'success') => {
     setShowNotification({ message, type });
@@ -144,7 +177,8 @@ export default function Configurateur() {
       setModules([{
         id: 'maitre-default',
         type: 'maitre',
-        usage: 'fromage' 
+        usage: 'fromage',
+        column: 0
       }]);
       setActiveModuleId('maitre-default');
       setStep('configuration');
@@ -178,13 +212,32 @@ export default function Configurateur() {
     });
   };
 
+  // Find first column with space
+  const getFirstAvailableColumn = () => {
+    const counts = { 0: 0, 1: 0, 2: 0 };
+    modules.forEach(m => {
+      const col = m.column ?? 0;
+      counts[col as keyof typeof counts]++;
+    });
+    if (counts[0] < 3) return 0;
+    if (counts[1] < 3) return 1;
+    if (counts[2] < 3) return 2;
+    return -1;
+  };
+
   // Add module (Family format only)
   const handleAddModule = (type: ModuleType) => {
     if (format !== 'famille') return;
     
-    // Business validation rule check: Cannot exceed 5 modules
-    if (modules.length >= 5) {
-      notify('Limite de hauteur atteinte (maximum 5 blocs pour des raisons de stabilité).', 'error');
+    // Business validation rule check: Cannot exceed 6 modules
+    if (modules.length >= 6) {
+      notify('Limite de blocs atteinte (maximum 6 blocs au total pour des raisons de puissance électrique).', 'error');
+      return;
+    }
+
+    const col = getFirstAvailableColumn();
+    if (col === -1) {
+      notify('Toutes les colonnes sont pleines (maximum 3 blocs par colonne).', 'error');
       return;
     }
 
@@ -193,12 +246,42 @@ export default function Configurateur() {
       id: newId,
       type,
       usage: 'fromage',
+      column: col,
       customName: `Module ${modules.length + 1}`
     };
 
     setModules([...modules, newModule]);
     setActiveModuleId(newId);
-    notify(`${MODULES_DATABASE[type].name} ajouté à la pile.`);
+    notify(`${MODULES_DATABASE[type].name} ajouté.`);
+  };
+
+  // Add module to specific column
+  const handleAddModuleToColumn = (columnIdx: number) => {
+    if (format !== 'famille') return;
+
+    if (modules.length >= 6) {
+      notify('Limite de blocs atteinte (maximum 6 blocs au total).', 'error');
+      return;
+    }
+
+    const colCount = modules.filter(m => (m.column ?? 0) === columnIdx).length;
+    if (colCount >= 3) {
+      notify('Cette colonne est déjà pleine.', 'error');
+      return;
+    }
+
+    const newId = `module-${Date.now()}`;
+    const newModule: ConfiguredModule = {
+      id: newId,
+      type: 'affinage-standard',
+      usage: 'fromage',
+      column: columnIdx,
+      customName: `Module ${modules.length + 1}`
+    };
+
+    setModules([...modules, newModule]);
+    setActiveModuleId(newId);
+    notify("Module d'Affinage Standard ajouté à la colonne.");
   };
 
   // Remove module (Family format only)
@@ -223,22 +306,26 @@ export default function Configurateur() {
     notify(`${MODULES_DATABASE[moduleToRemove.type].name} retiré.`);
   };
 
-  // Move module in stack (Family format only, index > 0)
-  const handleMoveModule = (index: number, direction: 'up' | 'down') => {
+  // Move module column left/right
+  const handleMoveModuleColumn = (id: string, direction: 'left' | 'right') => {
     if (format !== 'famille') return;
-    if (index === 0) return; // Master cannot move
-
-    const targetIndex = direction === 'up' ? index + 1 : index - 1;
-    if (targetIndex < 1 || targetIndex >= modules.length) return; // Bounds check
-
-    const updated = [...modules];
-    const temp = updated[index];
-    updated[index] = updated[targetIndex];
-    updated[targetIndex] = temp;
-
-    setModules(updated);
-    setActiveModuleId(temp.id);
-    notify(`Position du bloc modifiée.`);
+    setModules(prev => prev.map(m => {
+      if (m.id !== id) return m;
+      const currentCol = m.column ?? 0;
+      let nextCol = currentCol + (direction === 'right' ? 1 : -1);
+      if (nextCol < 0) nextCol = 0;
+      if (nextCol > 2) nextCol = 2;
+      
+      if (m.type === 'maitre') return m; // Master stays in column 0
+      
+      const targetColCount = prev.filter(x => (x.column ?? 0) === nextCol).length;
+      if (targetColCount >= 3) {
+        notify('Cette colonne est pleine.', 'error');
+        return m;
+      }
+      
+      return { ...m, column: nextCol };
+    }));
   };
 
   // Update chamber usage of a module
@@ -253,12 +340,26 @@ export default function Configurateur() {
   }, [modules]);
 
   const totalHeight = useMemo(() => {
-    return modules.reduce((sum, m) => sum + MODULES_DATABASE[m.type].heightCm, 0);
+    const colHeights = { 0: 0, 1: 0, 2: 0 };
+    modules.forEach(m => {
+      const colIdx = m.column ?? 0;
+      colHeights[colIdx as keyof typeof colHeights] += MODULES_DATABASE[m.type].heightCm;
+    });
+    return Math.max(colHeights[0], colHeights[1], colHeights[2]);
   }, [modules]);
 
   const activeModule = useMemo(() => {
     return modules.find(m => m.id === activeModuleId) || null;
   }, [modules, activeModuleId]);
+
+  const columnsData = useMemo(() => {
+    const cols: Record<number, ConfiguredModule[]> = { 0: [], 1: [], 2: [] };
+    modules.forEach(m => {
+      const colIdx = m.column ?? 0;
+      cols[colIdx].push(m);
+    });
+    return cols;
+  }, [modules]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-amber-200 py-8 px-4 md:px-8 relative overflow-hidden">
@@ -279,8 +380,10 @@ export default function Configurateur() {
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-amber-900">Configurateur de Cave</h1>
           </div>
           <div className="hidden md:flex gap-4 items-center">
-            <span className="text-xs text-slate-650">Des questions ? Contactez un affineur</span>
-            <span className="px-3 py-1 bg-amber-100 border border-amber-900/20 text-amber-900 text-xs font-semibold rounded-full">0800 45 45 00</span>
+            <span className="text-xs text-slate-650">Des questions ? Contactez-nous à</span>
+            <a href="mailto:affinebouche@gmail.com" className="px-3 py-1 bg-amber-100 border border-amber-900/20 text-amber-900 text-xs font-semibold rounded-full hover:bg-amber-205 transition-colors">
+              affinebouche@gmail.com
+            </a>
           </div>
         </div>
 
@@ -519,7 +622,6 @@ export default function Configurateur() {
         {step === 'configuration' && format && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            {/* COLUMN 1 (Left): Live Cave 3D/Stack Visualizer */}
             <div className="lg:col-span-5 flex flex-col justify-between bg-white border border-slate-200 p-8 rounded-3xl min-h-[500px] shadow-sm">
               <div>
                 <div className="flex justify-between items-center mb-6">
@@ -530,110 +632,114 @@ export default function Configurateur() {
                   </div>
                 </div>
 
-                {/* Stacking zone */}
-                <div className="relative border-b-8 border-slate-300 bg-slate-100/60 rounded-3xl p-6 min-h-[380px] flex flex-col-reverse items-center justify-start gap-1.5 overflow-hidden">
+                {/* Stacking zone — columns side-by-side */}
+                <div className="relative border-b-8 border-slate-355 bg-slate-100/60 rounded-3xl p-4 min-h-[380px] flex flex-row items-end justify-center gap-3 overflow-hidden select-none">
                   
                   {/* Internal ambient light glow */}
                   <div className="absolute inset-0 bg-gradient-to-t from-amber-500/5 to-transparent pointer-events-none"></div>
 
-                  {/* Dynamic Stack loops backwards to render bottom items first at layout base */}
-                  {modules.map((mod, index) => {
-                    const spec = MODULES_DATABASE[mod.type];
-                    const isActive = activeModuleId === mod.id;
-
-                    let heightClass = 'h-32';
-                    if (mod.type === 'maitre') heightClass = 'h-24';
-
+                  {(Object.keys(columnsData) as unknown as string[]).map((colIdxStr) => {
+                    const colIdx = parseInt(colIdxStr);
+                    const colModules = columnsData[colIdx];
                     return (
-                      <div
-                        key={mod.id}
-                        onClick={() => setActiveModuleId(mod.id)}
-                        className={`w-full max-w-xs ${heightClass} rounded-2xl border-2 bg-gradient-to-r ${spec.gradient} ${isActive ? 'ring-4 ring-amber-900/10 border-amber-900/80 shadow-md scale-[1.02]' : 'border-slate-200 hover:border-slate-300'} relative cursor-pointer transition-all duration-300 flex flex-col justify-between p-4 group select-none`}
-                      >
-                        {/* Micro amber LED line at the top of each module */}
-                        <div className="absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+                      <div key={colIdx} className="flex flex-col-reverse items-center gap-1.5 w-1/3 max-w-[110px] min-h-[300px] justify-start">
+                        {/* Standard add button if column has space */}
+                        {format === 'famille' && colModules.length < 3 && modules.length < 6 && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddModuleToColumn(colIdx);
+                            }}
+                            className="w-full h-10 border border-dashed border-slate-300 hover:border-amber-900/40 hover:bg-amber-50/20 rounded-xl flex items-center justify-center text-slate-400 hover:text-amber-900 transition-all text-[10px] font-bold gap-1 cursor-pointer"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>Ajouter</span>
+                          </button>
+                        )}
 
-                        {/* Top corner module badges */}
-                        <div className="flex justify-between items-start w-full">
-                          <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-slate-400 tracking-wider">
-                              NIVEAU {index}
-                            </span>
-                            {mod.type !== 'maitre' && (
-                              <span className="text-[9px] text-amber-800/80 font-bold uppercase">
-                                {index === 0 ? '' : index === 1 ? 'Base' : `Position ${index}`}
-                              </span>
-                            )}
-                          </div>
-                          {mod.type !== 'maitre' && mod.type !== 'tout-en-un' && format === 'famille' && (
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-all">
-                              {/* Move Down */}
-                              {index > 1 && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleMoveModule(index, 'down');
-                                  }}
-                                  className="text-slate-650 hover:text-amber-900 p-1 rounded bg-slate-100 hover:bg-slate-200 border border-slate-200/50 transition-all"
-                                  title="Déplacer vers le bas"
-                                >
-                                  <ArrowDown className="w-3 h-3" />
-                                </button>
-                              )}
-                              {/* Move Up */}
-                              {index < modules.length - 1 && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleMoveModule(index, 'up');
-                                  }}
-                                  className="text-slate-650 hover:text-amber-900 p-1 rounded bg-slate-100 hover:bg-slate-200 border border-slate-200/50 transition-all"
-                                  title="Déplacer vers le haut"
-                                >
-                                  <ArrowUp className="w-3 h-3" />
-                                </button>
-                              )}
-                              {/* Delete */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleRemoveModule(mod.id);
-                                }}
-                                className="text-slate-500 hover:text-red-600 p-1 rounded bg-slate-100 hover:bg-red-55 transition-all"
-                                title="Retirer ce bloc"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          )}
-                        </div>
+                        {colModules.map((mod, index) => {
+                          const spec = MODULES_DATABASE[mod.type];
+                          const isActive = activeModuleId === mod.id;
 
-                        {/* Internal Chamber representation */}
-                        <div className="flex-1 flex items-center justify-center py-2">
-                          {mod.type === 'maitre' ? (
-                            <div className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                              <span className="text-[10px] uppercase font-bold text-amber-200 tracking-widest">CENTRALE ACTIVED</span>
-                            </div>
-                          ) : (
-                            <div className="relative w-full h-full border border-slate-200/80 rounded-xl bg-slate-50/50 flex items-center justify-center">
-                              {/* Glowing glass rack */}
-                              <div className="absolute inset-x-2 top-1/2 h-[1px] bg-slate-200/80"></div>
-                              <span className="text-2xl filter drop-shadow">
-                                {mod.usage === 'fromage' ? '🧀' : mod.usage === 'vin' ? '🍷' : '🥩'}
-                              </span>
-                              <span className="absolute bottom-1 right-2 text-[9px] text-slate-400 font-bold uppercase">
-                                {mod.usage}
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                          let heightClass = 'h-24';
+                          if (mod.type === 'maitre') heightClass = 'h-18';
 
-                        {/* Title of module inside the visual block */}
-                        <div className="flex justify-between items-end">
-                          <span className={`text-xs font-bold truncate max-w-[150px] ${mod.type === 'maitre' ? 'text-white' : 'text-slate-800'}`}>{spec.name}</span>
-                          <span className={`text-xs font-mono font-semibold ${mod.type === 'maitre' ? 'text-amber-200' : 'text-slate-650'}`}>{spec.price} €</span>
-                        </div>
+                          return (
+                            <div
+                              key={mod.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveModuleId(mod.id);
+                              }}
+                              className={`w-full ${heightClass} rounded-xl border bg-gradient-to-r ${spec.gradient} ${isActive ? 'ring-2 ring-amber-900/30 border-amber-900 shadow-md scale-[1.01]' : 'border-slate-200 hover:border-slate-300'} relative cursor-pointer transition-all duration-300 flex flex-col justify-between p-2.5 group`}
+                            >
+                              <div className="absolute top-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-amber-500/20 to-transparent"></div>
+
+                              <div className="flex justify-between items-start w-full text-[8px] font-bold text-slate-400">
+                                <span>{mod.type === 'maitre' ? 'SOCLE' : `H : ${index + 1}`}</span>
+                                {mod.type !== 'maitre' && (
+                                  <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {colIdx > 0 && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleMoveModuleColumn(mod.id, 'left');
+                                        }}
+                                        className="text-slate-550 hover:text-amber-900 bg-white border border-slate-100 p-0.5 rounded font-extrabold"
+                                        title="Déplacer à gauche"
+                                      >
+                                        ←
+                                      </button>
+                                    )}
+                                    {colIdx < 2 && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleMoveModuleColumn(mod.id, 'right');
+                                        }}
+                                        className="text-slate-550 hover:text-amber-900 bg-white border border-slate-100 p-0.5 rounded font-extrabold"
+                                        title="Déplacer à droite"
+                                      >
+                                        →
+                                      </button>
+                                    )}
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveModule(mod.id);
+                                      }}
+                                      className="text-slate-500 hover:text-red-655 bg-white border border-slate-100 p-0.5 rounded"
+                                      title="Supprimer"
+                                    >
+                                      <Trash2 className="w-2.5 h-2.5" />
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="flex-1 flex items-center justify-center py-1">
+                                {mod.type === 'maitre' ? (
+                                  <span className="text-[6.5px] uppercase font-black text-amber-200 tracking-wider">CENTRALE</span>
+                                ) : (
+                                  <div className="relative w-full h-full border border-slate-200/40 rounded-lg bg-slate-50/50 flex items-center justify-center">
+                                    <span className="text-base select-none">
+                                      {mod.usage === 'fromage' ? '🧀' : mod.usage === 'vin' ? '🍷' : '🥩'}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="flex justify-between items-end text-[8px] font-bold">
+                                <span className={`truncate max-w-[50px] ${mod.type === 'maitre' ? 'text-white' : 'text-slate-800'}`}>
+                                  {mod.type === 'maitre' ? 'Centrale' : mod.usage === 'fromage' ? 'Fromage' : mod.usage === 'vin' ? 'Vin' : 'Maturation'}
+                                </span>
+                                <span className={`font-mono ${mod.type === 'maitre' ? 'text-amber-200' : 'text-slate-500'}`}>
+                                  {spec.price}€
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     );
                   })}

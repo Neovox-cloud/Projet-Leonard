@@ -19,6 +19,7 @@ import {
   Sparkles,
   Users,
   Star,
+  Building,
 } from 'lucide-react';
 
 /* ─────────────────── DONNÉES ─────────────────── */
@@ -127,6 +128,7 @@ const ranges = [
     iconColor: 'text-slate-600',
     iconBg: 'bg-slate-100',
     featured: false,
+    link: '/configurateur?format=compact',
   },
   {
     icon: Users,
@@ -140,19 +142,21 @@ const ranges = [
     iconColor: 'text-amber-700',
     iconBg: 'bg-amber-100',
     featured: true,
+    link: '/configurateur?format=famille',
   },
   {
-    icon: Star,
-    name: 'Haut de gamme',
-    tagline: "L'excellence sans limite",
+    icon: Building,
+    name: 'Professionnelle',
+    tagline: "Sur devis uniquement",
     description:
-      'Configuration multi-blocs sur-mesure pour restaurateurs, cavistes et écoles de cuisine.',
-    accent: 'from-yellow-600 to-yellow-900',
-    accentBg: 'bg-yellow-50',
-    accentBorder: 'border-yellow-200',
-    iconColor: 'text-yellow-700',
-    iconBg: 'bg-yellow-100',
+      'Conçue spécifiquement pour les restaurateurs, fromagers et artisans. Grande capacité & régulation pro.',
+    accent: 'from-amber-900 to-amber-955',
+    accentBg: 'bg-amber-950/5',
+    accentBorder: 'border-amber-950/20',
+    iconColor: 'text-amber-950',
+    iconBg: 'bg-amber-950/10',
     featured: false,
+    link: '/configurateur?format=professionnel',
   },
 ];
 
@@ -227,18 +231,18 @@ export default function ProductDescription() {
             <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-amber-800 rounded-full mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="flex flex-wrap justify-center gap-5">
             {specs.map((spec) => {
               const Icon = spec.icon;
               return (
                 <div
                   key={spec.title}
-                  className={`group flex gap-4 p-5 rounded-2xl border ${spec.border} ${spec.bg} hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200`}
+                  className="group flex gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-amber-300 hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-[320px] md:w-[280px] lg:w-[300px] xl:w-[280px] flex-grow max-w-[360px]"
                 >
                   <div
-                    className={`shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${spec.bg} border ${spec.border} group-hover:scale-110 transition-transform`}
+                    className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-amber-50 border border-amber-100 group-hover:scale-110 transition-transform"
                   >
-                    <Icon className={`w-5 h-5 ${spec.color}`} />
+                    <Icon className="w-5 h-5 text-amber-700" />
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-slate-800 text-sm leading-snug mb-1">{spec.title}</p>
@@ -292,14 +296,14 @@ export default function ProductDescription() {
                   <p className="text-slate-600 text-sm leading-relaxed flex-1">{range.description}</p>
 
                   <Link
-                    href="/configurateur"
+                    href={range.link}
                     className={`mt-8 flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold text-sm transition-all group ${
                       range.featured
                         ? `bg-gradient-to-r ${range.accent} text-white shadow-lg hover:opacity-90`
                         : 'border-2 border-slate-200 bg-white text-slate-700 hover:border-amber-300 hover:bg-amber-50'
                     }`}
                   >
-                    Configurer
+                    {range.name === 'Professionnelle' ? 'Demander un devis' : 'Configurer'}
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>

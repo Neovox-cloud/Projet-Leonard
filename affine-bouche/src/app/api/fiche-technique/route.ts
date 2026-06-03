@@ -1,5 +1,8 @@
-import PDFDocument from 'pdfkit';
+// @ts-ignore
+import PDFDocument from 'pdfkit/js/pdfkit.standalone';
 import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
 
 export const runtime = 'nodejs';
 
@@ -70,30 +73,48 @@ export async function GET() {
     const CW = W - M * 2;      // content width
 
     /* ══════════════════════════════════════════
-       HEADER BANNER
-    ══════════════════════════════════════════ */
+       HEADER BANNER WITH LOGO
+       ══════════════════════════════════════════ */
     doc.rect(0, 0, W, 110).fill(AMBER);
 
     // Ligne décorative fine
     doc.rect(0, 108, W, 3).fill(AMBER_LIGHT);
 
-    // Badge ingénieurs (coin haut droit)
-    doc.fontSize(7).fillColor(WHITE).opacity(0.75)
-      .text('Conçu par des ingénieurs ECAM LaSalle Lyon', M, 16, { align: 'right', width: CW });
+    // Logo Container (White Card)
+    const logoSize = 80;
+    doc.roundedRect(M, 15, logoSize, logoSize, 8).fill(WHITE);
+
+    try {
+      const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+      if (fs.existsSync(logoPath)) {
+        const logoBuffer = fs.readFileSync(logoPath);
+        // Draw the image nicely centered in the white card
+        doc.image(logoBuffer, M + 8, 23, { width: logoSize - 16, height: logoSize - 16 });
+      }
+    } catch (e) {
+      console.error('Failed to load logo in PDF generator:', e);
+    }
+
+    const textX = M + logoSize + 16;
+    const textW = W - M - textX;
+
+    // Badge ingénieurs (coin haut droit de la zone de texte)
+    doc.fontSize(7).font('Helvetica').fillColor(WHITE).opacity(0.75)
+      .text('Conçu par des ingénieurs ECAM LaSalle Lyon', textX, 16, { align: 'right', width: textW });
     doc.opacity(1);
 
     // Titre produit
-    doc.fontSize(26).font('Helvetica-Bold').fillColor(WHITE)
-      .text("L'Affine Bouche", M, 30, { width: CW });
+    doc.fontSize(22).font('Helvetica-Bold').fillColor(WHITE)
+      .text("L'Affine Bouche", textX, 28, { width: textW });
 
     // Sous-titre
-    doc.fontSize(11).font('Helvetica').fillColor(WHITE).opacity(0.85)
-      .text('Cave Gastronomique Connectée  ·  Fiche Technique', M, 62, { width: CW });
+    doc.fontSize(10).font('Helvetica').fillColor(WHITE).opacity(0.85)
+      .text('Cave Gastronomique Connectée  ·  Fiche Technique', textX, 58, { width: textW });
     doc.opacity(1);
 
     // Accroche
-    doc.fontSize(9).font('Helvetica-Oblique').fillColor(WHITE).opacity(0.7)
-      .text('"L\'art de l\'affinage, enfin à portée de main."', M, 82, { width: CW });
+    doc.fontSize(8.5).font('Helvetica-Oblique').fillColor(WHITE).opacity(0.7)
+      .text('"L\'art de l\'affinage, enfin à portée de main."', textX, 78, { width: textW });
     doc.opacity(1);
 
     let y = 130;
