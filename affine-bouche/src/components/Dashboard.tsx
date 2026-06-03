@@ -179,7 +179,7 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
             <span className="text-amber-500">⚙️</span> Compartiment {activeCompartmentId ? `#${activeCompartmentId}` : ''}
           </h3>
           
-          {!activeCompartmentId ? (
+          {!activeCompartmentId || !activeComp ? (
             <div className="text-gray-400 text-center py-8 bg-gray-900/50 rounded-xl border border-dashed border-gray-700">
               <span className="text-4xl block mb-2">👈</span>
               Sélectionnez un compartiment dans la grille pour configurer son affinage.
@@ -215,7 +215,7 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
                         {cheeses.map(c => (
                           <div 
                             key={c.id} 
-                            className={`px-6 py-3 cursor-pointer transition-colors text-sm ${activeComp.selectedCheeseId === c.id ? 'bg-gray-700/50 text-amber-400 font-medium' : 'text-gray-300 hover:bg-gray-800'}`}
+                            className={`px-6 py-3 cursor-pointer transition-colors text-sm ${activeComp?.selectedCheeseId === c.id ? 'bg-gray-700/50 text-amber-400 font-medium' : 'text-gray-300 hover:bg-gray-800'}`}
                             onClick={() => {
                               assignCheese(activeCompartmentId, c.id);
                               setIsDropdownOpen(false);
@@ -237,26 +237,26 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
                   <div className="grid grid-cols-3 gap-2 bg-gray-900 p-1 rounded-lg border border-gray-700">
                     <button 
                       onClick={() => changePreference(activeCompartmentId, 'jeune')}
-                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp.preference === 'jeune' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
+                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'jeune' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
                     >
                       Jeune
                     </button>
                     <button 
                       onClick={() => changePreference(activeCompartmentId, 'moyen')}
-                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp.preference === 'moyen' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
+                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'moyen' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
                     >
                       À point
                     </button>
                     <button 
                       onClick={() => changePreference(activeCompartmentId, 'vieux')}
-                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp.preference === 'vieux' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
+                      className={`py-2 px-1 text-xs font-semibold rounded-md transition-all ${activeComp?.preference === 'vieux' ? 'bg-amber-600 text-white shadow' : 'text-gray-400 hover:text-white'}`}
                     >
                       Corsé
                     </button>
                   </div>
                   <div className="text-xs text-amber-500/80 mt-2 flex justify-between px-1">
                     <span>Durée cible :</span>
-                    <span className="font-mono">{activeComp.targetDurationDays} jours</span>
+                    <span className="font-mono">{activeComp?.targetDurationDays} jours</span>
                   </div>
                 </div>
               )}
