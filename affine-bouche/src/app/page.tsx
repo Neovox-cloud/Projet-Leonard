@@ -86,57 +86,130 @@ export default function Home() {
       {/* Product Description Section */}
       <ProductDescription />
 
-      {/* Features Section */}
-      <section id="features" className="py-24 bg-white relative">
+      {/* Examples / Configurations Section */}
+      <section id="examples" className="py-24 bg-white relative">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl font-bold mb-4">Une technologie de pointe</h2>
-            <p className="text-lg text-slate-600">Tout ce dont vous avez besoin pour un affinage d'exception.</p>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Exemples de Configurations</h2>
+            <p className="text-lg text-slate-600">Des combinaisons sur-mesure adaptées à vos passions.</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Block 1 */}
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <ThermometerSun className="w-7 h-7" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Cave du Charcutier */}
+            <div className="bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl transition-all duration-300 flex flex-col group">
+              <div className="h-64 relative overflow-hidden bg-slate-200">
+                <Image 
+                  src="/cave_charcutier.png" 
+                  alt="La Cave du Charcutier"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-4 left-4 bg-amber-900/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Spécial Viande & Salaisons
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">Thermorégulation Active</h3>
-              <p className="text-slate-600 leading-relaxed">
-                Maintient une température constante et précise, réglable de 8°C à 16°C, essentielle pour le développement des arômes.
-              </p>
+              <div className="p-8 flex-1 flex flex-col">
+                <h3 className="text-2xl font-bold mb-3 text-slate-900">La Cave du Charcutier</h3>
+                <p className="text-slate-600 text-sm mb-6 flex-1">
+                  Optimisée pour sécher et affiner vos jambons, saucissons et pièces de viande. Cette configuration comprend 3 blocs d'affinage renforcés et un système d'aération active anti-moisissures.
+                </p>
+                <div className="space-y-3 pt-4 border-t border-slate-200/60 text-sm text-slate-700">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Modules :</span>
+                    <span className="font-semibold">3 Blocs Viande + 1 Bloc Technique</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Température :</span>
+                    <span className="font-semibold text-amber-900">10°C - 14°C</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Hygrométrie :</span>
+                    <span className="font-semibold text-amber-900">75% - 80%</span>
+                  </div>
+                </div>
+                <Link href="/configurateur?preset=charcutier" className="mt-6 w-full text-center py-3 bg-amber-900 hover:bg-amber-800 text-white rounded-xl text-sm font-semibold transition-colors">
+                  Découvrir ce modèle
+                </Link>
+              </div>
             </div>
 
-            {/* Block 2 */}
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Droplets className="w-7 h-7" />
+            {/* Cave du Fromager */}
+            <div className="bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl transition-all duration-300 flex flex-col group">
+              <div className="h-64 relative overflow-hidden bg-slate-200">
+                <Image 
+                  src="/cave_fromager.png" 
+                  alt="La Cave du Fromager"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-4 left-4 bg-amber-900/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Affinage Fromages
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">Hygrométrie Parfaite</h3>
-              <p className="text-slate-600 leading-relaxed">
-                Système de brumisation ultrasonique intelligent garantissant un taux d'humidité optimal de 80% à 95%.
-              </p>
+              <div className="p-8 flex-1 flex flex-col">
+                <h3 className="text-2xl font-bold mb-3 text-slate-900">La Cave du Fromager</h3>
+                <p className="text-slate-600 text-sm mb-6 flex-1">
+                  Le choix historique pour tous les amoureux de fromages. Dotée de tiroirs en bois de hêtre et d'une régulation d'humidité poussée pour des croûtes fleuries parfaites.
+                </p>
+                <div className="space-y-3 pt-4 border-t border-slate-200/60 text-sm text-slate-700">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Modules :</span>
+                    <span className="font-semibold">3 Blocs Fromage + 1 Humidificateur</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Température :</span>
+                    <span className="font-semibold text-amber-900">8°C - 12°C</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Hygrométrie :</span>
+                    <span className="font-semibold text-amber-900">85% - 95%</span>
+                  </div>
+                </div>
+                <Link href="/configurateur?preset=fromager" className="mt-6 w-full text-center py-3 bg-amber-900 hover:bg-amber-800 text-white rounded-xl text-sm font-semibold transition-colors">
+                  Découvrir ce modèle
+                </Link>
+              </div>
             </div>
 
-            {/* Block 3 */}
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Wind className="w-7 h-7" />
+            {/* Cave à Vin */}
+            <div className="bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:shadow-2xl transition-all duration-300 flex flex-col group">
+              <div className="h-64 relative overflow-hidden bg-slate-200">
+                <Image 
+                  src="/cave_vin.png" 
+                  alt="La Cave à Vin"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-4 left-4 bg-amber-900/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  Conservation & Service
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">Filtration Moléculaire</h3>
-              <p className="text-slate-600 leading-relaxed">
-                Filtre à charbon actif de qualité industrielle. Retient les odeurs puissantes tout en renouvelant l'air de la cave.
-              </p>
-            </div>
-
-            {/* Block 4 */}
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-7 h-7" />
+              <div className="p-8 flex-1 flex flex-col">
+                <h3 className="text-2xl font-bold mb-3 text-slate-900">La Cave à Vin</h3>
+                <p className="text-slate-600 text-sm mb-6 flex-1">
+                  Conservez vos plus grands crus dans un environnement sans vibration, à l'abri de la lumière et parfaitement tempéré. Idéal pour le vieillissement de vos bouteilles.
+                </p>
+                <div className="space-y-3 pt-4 border-t border-slate-200/60 text-sm text-slate-700">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Modules :</span>
+                    <span className="font-semibold">3 Blocs Vin (24 bouteilles)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Température :</span>
+                    <span className="font-semibold text-amber-900">12°C - 16°C</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium text-slate-500">Hygrométrie :</span>
+                    <span className="font-semibold text-amber-900">70% - 75%</span>
+                  </div>
+                </div>
+                <Link href="/configurateur?preset=vin" className="mt-6 w-full text-center py-3 bg-amber-900 hover:bg-amber-800 text-white rounded-xl text-sm font-semibold transition-colors">
+                  Découvrir ce modèle
+                </Link>
               </div>
-              <h3 className="text-xl font-bold mb-3">Application Connectée</h3>
-              <p className="text-slate-600 leading-relaxed">
-                Contrôlez et surveillez vos fromages en temps réel depuis votre smartphone avec notre base de données intégrée.
-              </p>
             </div>
           </div>
         </div>

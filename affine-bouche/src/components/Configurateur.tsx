@@ -116,8 +116,109 @@ export default function Configurateur() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      const preset = params.get('preset');
       const initialFormat = params.get('format');
-      if (initialFormat === 'professionnel') {
+      
+      if (preset === 'charcutier') {
+        setFormat('famille');
+        setModules([
+          {
+            id: 'maitre-default',
+            type: 'maitre',
+            usage: 'fromage',
+            column: 0
+          },
+          {
+            id: 'charc-1',
+            type: 'affinage-standard',
+            usage: 'viande',
+            column: 0,
+            customName: 'Séchage Actif'
+          },
+          {
+            id: 'charc-2',
+            type: 'affinage-standard',
+            usage: 'viande',
+            column: 0,
+            customName: 'Affinage Lent'
+          },
+          {
+            id: 'charc-3',
+            type: 'affinage-standard',
+            usage: 'viande',
+            column: 1,
+            customName: 'Salaison & Repos'
+          },
+          {
+            id: 'charc-4',
+            type: 'affinage-standard',
+            usage: 'viande',
+            column: 1,
+            customName: 'Maturation Bœuf'
+          }
+        ]);
+        setActiveModuleId('charc-1');
+        setStep('configuration');
+      } else if (preset === 'fromager') {
+        setFormat('famille');
+        setModules([
+          {
+            id: 'maitre-default',
+            type: 'maitre',
+            usage: 'fromage',
+            column: 0
+          },
+          {
+            id: 'from-1',
+            type: 'affinage-standard',
+            usage: 'fromage',
+            column: 0,
+            customName: 'Pâtes Pressées'
+          },
+          {
+            id: 'from-2',
+            type: 'affinage-standard',
+            usage: 'fromage',
+            column: 0,
+            customName: 'Pâtes Molles'
+          },
+          {
+            id: 'from-3',
+            type: 'affinage-standard',
+            usage: 'fromage',
+            column: 1,
+            customName: 'Bleus & Chèvres'
+          }
+        ]);
+        setActiveModuleId('from-1');
+        setStep('configuration');
+      } else if (preset === 'vin') {
+        setFormat('famille');
+        setModules([
+          {
+            id: 'maitre-default',
+            type: 'maitre',
+            usage: 'fromage',
+            column: 0
+          },
+          {
+            id: 'vin-1',
+            type: 'affinage-standard',
+            usage: 'vin',
+            column: 0,
+            customName: 'Garde Rouges'
+          },
+          {
+            id: 'vin-2',
+            type: 'affinage-standard',
+            usage: 'vin',
+            column: 0,
+            customName: 'Service Blancs & Rosés'
+          }
+        ]);
+        setActiveModuleId('vin-1');
+        setStep('configuration');
+      } else if (initialFormat === 'professionnel') {
         setFormat('professionnel');
         setStep('devis-professionnel');
       } else if (initialFormat === 'compact') {
@@ -147,7 +248,7 @@ export default function Configurateur() {
   // Helper trigger notification
   const notify = (message: string, type: 'success' | 'error' = 'success') => {
     setShowNotification({ message, type });
-    setTimeout(() => setShowNotification(null), 4000);
+    setTimeout(() => setShowNotification(null), 1500);
   };
 
   const handleDevisSubmit = (e: React.FormEvent) => {
@@ -556,12 +657,12 @@ export default function Configurateur() {
                 onClick={() => handleSelectFormat('professionnel')}
                 className="group relative bg-white border border-slate-200 hover:border-amber-900/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
               >
-                <div className="absolute top-5 right-5 bg-amber-955 border border-amber-800 text-amber-200 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
+                <div className="absolute top-5 right-5 bg-amber-900 border border-amber-800 text-amber-100 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
                   Sur Devis Uniquement
                 </div>
                 
                 <div className="space-y-6">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-955 text-amber-300 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-900 text-amber-300 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Building className="w-7 h-7" />
                   </div>
                   
@@ -593,7 +694,7 @@ export default function Configurateur() {
                 <div className="pt-8 mt-8 border-t border-slate-100 flex items-center justify-between">
                   <div>
                     <span className="text-xs text-slate-500 block uppercase font-semibold">Tarification</span>
-                    <span className="text-2xl font-black text-amber-955 font-bold">Sur Devis</span>
+                    <span className="text-2xl font-black text-amber-900 font-bold">Sur Devis</span>
                   </div>
                   <div className="px-5 py-2.5 bg-amber-950 group-hover:bg-amber-900 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
                     Demander un Devis
@@ -605,7 +706,7 @@ export default function Configurateur() {
 
             {/* General FAQs/Features info */}
             <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 mt-12">
-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-955 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-900 flex items-center justify-center shrink-0">
                 <Sparkles className="w-6 h-6" />
               </div>
               <div className="space-y-1">
@@ -914,7 +1015,7 @@ export default function Configurateur() {
             <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
             <div className="text-center space-y-2">
-              <span className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-955 flex items-center justify-center mx-auto mb-4">
+              <span className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-900 flex items-center justify-center mx-auto mb-4">
                 <ShieldCheck className="w-6 h-6" />
               </span>
               <h2 className="text-2xl font-extrabold text-slate-900">Récapitulatif de votre Cave</h2>
@@ -968,7 +1069,7 @@ export default function Configurateur() {
               
               <div className="flex justify-between items-baseline pt-1">
                 <span className="text-sm font-bold text-slate-850">Prix Total (TTC)</span>
-                <span className="text-3xl font-black text-amber-955 font-mono">{totalPricing} €</span>
+                <span className="text-3xl font-black text-amber-900 font-mono">{totalPricing} €</span>
               </div>
             </div>
 
