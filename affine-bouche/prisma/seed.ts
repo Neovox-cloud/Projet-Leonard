@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
+import { VIANDES } from '../src/data/viandes.ts';
+import { VINS } from '../src/data/vins.ts';
 
 const prisma = new PrismaClient();
 
@@ -56,6 +58,42 @@ async function main() {
   }
   
   console.log('Importation des fromages terminée avec succès !');
+
+  // Vider et insérer les viandes
+  console.log('Insertion des viandes...');
+  await prisma.viandeProfile.deleteMany({});
+  for (const v of VIANDES) {
+    await prisma.viandeProfile.create({
+      data: {
+        id: v.id,
+        nom: v.nom,
+        categorie: v.categorie,
+        temp_conservation_degC: v.temp_conservation_degC,
+        temp_maturation_degC: v.temp_maturation_degC,
+        hygrometrie_pourcent: v.hygrometrie_pourcent,
+        temp_apres_maturation_degC: v.temp_apres_maturation_degC,
+      }
+    });
+  }
+  console.log('Importation des viandes terminée !');
+
+  // Vider et insérer les vins
+  console.log('Insertion des vins...');
+  await prisma.vinProfile.deleteMany({});
+  for (const v of VINS) {
+    await prisma.vinProfile.create({
+      data: {
+        id: v.id,
+        nom: v.nom,
+        type: v.type,
+        temp_conservation_degC: v.temp_conservation_degC,
+        temp_vieillissement_degC: v.temp_vieillissement_degC,
+        hygrometrie_pourcent: v.hygrometrie_pourcent,
+        temp_service_recommandee_degC: v.temp_service_recommandee_degC,
+      }
+    });
+  }
+  console.log('Importation des vins terminée !');
   
   // S'assurer qu'il y a au moins un mockCave
   const caveCount = await prisma.mockCave.count();

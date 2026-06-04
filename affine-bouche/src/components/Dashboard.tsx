@@ -1,104 +1,19 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { VIANDES, VIANDES_BY_CATEGORY, ViandeProfile } from '@/data/viandes';
-import { VINS, VINS_BY_TYPE, VinProfile } from '@/data/vins';
+import React, { useState, useMemo } from 'react';
+import { Bluetooth } from 'lucide-react';
+import { 
+  useSimulationCave, 
+  ContentType, 
+  CompartmentState, 
+  CheeseProfile, 
+  ViandeProfile, 
+  VinProfile,
+  getTargetConditions 
+} from '../hooks/useSimulationCave';
 
 // ============================================================
-// SECTION 1 — TYPES & INTERFACES
-// ============================================================
-
-export interface CheeseProfile {
-  id: string;
-  nom: string;
-  categorie: string | null;
-  lait: string | null;
-  affinageTempMin: number | null;
-  affinageTempMax: number | null;
-  affinageHygroMin: number | null;
-  affinageHygroMax: number | null;
-  affinageDureeMin: number | null;
-  affinageDureeMax: number | null;
-  notes: string | null;
-}
-
-export type ContentType = 'fromage' | 'viande' | 'vin';
-
-export interface CompartmentState {
-  id: number;
-  // Content
-  contentType: ContentType;
-  selectedItemId: string | null;
-  // Fromage-specific
-  preference: 'jeune' | 'moyen' | 'vieux';
-  targetDurationDays: number;
-  startDate: number | null;
-  // Viande-specific
-  maturePhase: 'conservation' | 'maturation' | 'post-maturation';
-  // Vin-specific
-  vinPhase: 'conservation' | 'vieillissement';
-  // Sensors & actuators
-  isAutoMode: boolean;
-  currentTemp: number;
-  currentHumidity: number;
-  coolerActive: boolean;
-  humidifierActive: boolean;
-  fanActive: boolean;
-}
-
-// ============================================================
-// SECTION 2 — HELPERS: TARGET CONDITIONS PER CONTENT TYPE
-// ============================================================
-
-function getDefaultTemp(contentType: ContentType): number {
-  if (contentType === 'vin') return 12.0;
-  if (contentType === 'viande') return 2.0;
-  return 14.0; // fromage
-}
-
-function getTargetConditions(
-  comp: CompartmentState,
-  cheeses: CheeseProfile[]
-): { targetTemp: number; targetHygro: number } | null {
-  if (!comp.selectedItemId) return null;
-
-  if (comp.contentType === 'fromage') {
-    const cheese = cheeses.find(c => c.id === comp.selectedItemId);
-    if (!cheese) return null;
-    const min = cheese.affinageTempMin ?? 10;
-    const max = cheese.affinageTempMax ?? 14;
-    const hygro = cheese.affinageHygroMin ?? 85;
-    let targetTemp = (min + max) / 2;
-    if (comp.preference === 'jeune') targetTemp = min;
-    if (comp.preference === 'vieux') targetTemp = max;
-    return { targetTemp, targetHygro: hygro };
-  }
-
-  if (comp.contentType === 'viande') {
-    const viande = VIANDES.find(v => v.id === comp.selectedItemId);
-    if (!viande) return null;
-    const tempMap = {
-      'conservation': viande.temp_conservation_degC,
-      'maturation': viande.temp_maturation_degC,
-      'post-maturation': viande.temp_apres_maturation_degC,
-    };
-    return { targetTemp: tempMap[comp.maturePhase], targetHygro: viande.hygrometrie_pourcent };
-  }
-
-  if (comp.contentType === 'vin') {
-    const vin = VINS.find(v => v.id === comp.selectedItemId);
-    if (!vin) return null;
-    const targetTemp = comp.vinPhase === 'conservation'
-      ? vin.temp_conservation_degC
-      : vin.temp_vieillissement_degC;
-    return { targetTemp, targetHygro: vin.hygrometrie_pourcent };
-  }
-
-  return null;
-}
-
-// ============================================================
-// SECTION 3 — COMPARTMENT CONTENT TYPE LABELS & ICONS
+// SECTION 1 — COMPARTMENT CONTENT TYPE LABELS & ICONS
 // ============================================================
 
 const CONTENT_TYPE_META: Record<ContentType, { label: string; icon: string; color: string; bgColor: string; borderColor: string }> = {
@@ -108,179 +23,113 @@ const CONTENT_TYPE_META: Record<ContentType, { label: string; icon: string; colo
 };
 
 // ============================================================
-// SECTION 4 — DASHBOARD COMPONENT
+// SECTION 2 — DASHBOARD COMPONENT
 // ============================================================
 
-export default function Dashboard({ initialCheeses }: { initialCheeses: CheeseProfile[] }) {
+export default function Dashboard({ 
+  initialCheeses, 
+  initialViandes, 
+  initialVins 
+}: { 
+  initialCheeses: CheeseProfile[];
+  initialViandes: ViandeProfile[];
+  initialVins: VinProfile[];
+}) {
 
-  // ── 4.1 STATE ──────────────────────────────────────────────
+  const [cheeses, setCheeses] = useState<CheeseProfile[]>(initialCheeses);
+  const [viandes, setViandes] = useState<ViandeProfile[]>(initialViandes);
+  const [vins, setVins] = useState<VinProfile[]>(initialVins);
 
-  const [compartments, setCompartments] = useState<CompartmentState[]>(
-    Array.from({ length: 6 }).map((_, index) => ({
-      id: index + 1,
-      contentType: 'fromage',
-      selectedItemId: null,
-      preference: 'moyen',
-      targetDurationDays: 30,
-      startDate: null,
-      maturePhase: 'maturation',
-      vinPhase: 'conservation',
-      isAutoMode: true,
-      currentTemp: 14.5,
-      currentHumidity: 70.0,
-      coolerActive: false,
-      humidifierActive: false,
-      fanActive: false,
-    }))
-  );
+  const {
+    compartments,
+    updateCompartment,
+    handleContentTypeChange,
+    assignItem,
+    changePreference,
+    toggleControl
+  } = useSimulationCave(cheeses, viandes, vins);
 
   const [activeCompartmentId, setActiveCompartmentId] = useState<number | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [, setTick] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // ── 4.2 SIMULATION LOOP ────────────────────────────────────
+  // Form states for adding custom product
+  const [modalProductType, setModalProductType] = useState<ContentType>('fromage');
+  const [formData, setFormData] = useState({
+    nom: '',
+    categorie: '',
+    lait: 'Vache',
+    // Fromage specific
+    affinageTempMin: '10',
+    affinageTempMax: '14',
+    affinageHygroMin: '85',
+    affinageHygroMax: '90',
+    affinageDureeMin: '15',
+    affinageDureeMax: '30',
+    notes: '',
+    // Viande specific
+    temp_conservation_degC: '2',
+    temp_maturation_degC: '2',
+    hygrometrie_pourcent: '80',
+    temp_apres_maturation_degC: '4',
+    // Vin specific
+    temp_vieillissement_degC: '12',
+    temp_service_recommandee_degC: '16'
+  });
+  const [modalError, setModalError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTick(t => t + 1);
-
-      setCompartments(prev => prev.map(comp => {
-        let { currentTemp, currentHumidity, coolerActive, humidifierActive, fanActive, isAutoMode } = comp;
-
-        if (isAutoMode && comp.selectedItemId) {
-          const targets = getTargetConditions(comp, initialCheeses);
-          if (targets) {
-            const { targetTemp, targetHygro } = targets;
-            coolerActive = currentTemp > targetTemp + 0.3;
-            if (currentTemp <= targetTemp) coolerActive = false;
-            humidifierActive = currentHumidity < targetHygro - 1;
-            if (currentHumidity >= targetHygro) humidifierActive = false;
-            fanActive = coolerActive || humidifierActive;
-          }
-        }
-
-        let tempDelta = 0.02;
-        if (coolerActive) tempDelta = -0.15;
-
-        let hygroDelta = -0.05;
-        if (humidifierActive) hygroDelta = 0.3;
-        if (coolerActive && !humidifierActive) hygroDelta -= 0.1;
-
-        return {
-          ...comp,
-          currentTemp: Number((currentTemp + tempDelta).toFixed(2)),
-          currentHumidity: Number((Math.min(100, Math.max(0, currentHumidity + hygroDelta))).toFixed(2)),
-          coolerActive,
-          humidifierActive,
-          fanActive,
-        };
-      }));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [initialCheeses]);
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('affine_bouche_compartments');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length === 6) {
-            setCompartments(parsed);
-          }
-        } catch (e) {
-          console.error("Failed to load compartments from localStorage", e);
-        }
-      }
-    }
-  }, []);
-
-  // ── 4.3 EVENT HANDLERS ─────────────────────────────────────
-
-  const updateCompartment = (id: number, updates: Partial<CompartmentState>) => {
-    setCompartments(prev => {
-      const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('affine_bouche_compartments', JSON.stringify(updated));
-      }
-      return updated;
-    });
-  };
-
-  const handleContentTypeChange = (id: number, contentType: ContentType) => {
-    const defaultTemp = getDefaultTemp(contentType);
-    updateCompartment(id, {
-      contentType,
-      selectedItemId: null,
-      startDate: null,
-      currentTemp: defaultTemp,
-      preference: 'moyen',
-      maturePhase: 'maturation',
-      vinPhase: 'conservation',
-    });
+  // Wrapper for ContentType change
+  const onContentTypeChange = (id: number, contentType: ContentType) => {
+    handleContentTypeChange(id, contentType);
     setIsDropdownOpen(false);
   };
 
-  const assignItem = (compartmentId: number, itemId: string | null, contentType: ContentType) => {
-    if (!itemId) {
-      updateCompartment(compartmentId, { selectedItemId: null, startDate: null });
-      return;
-    }
-
-    if (contentType === 'fromage') {
-      const cheese = initialCheeses.find(c => c.id === itemId);
-      const min = cheese?.affinageDureeMin ?? 21;
-      const max = cheese?.affinageDureeMax ?? 35;
-      updateCompartment(compartmentId, {
-        selectedItemId: itemId,
-        startDate: Date.now(),
-        targetDurationDays: Math.round((min + max) / 2),
-      });
-    } else {
-      updateCompartment(compartmentId, { selectedItemId: itemId, startDate: Date.now() });
-    }
-  };
-
-  const changePreference = (compartmentId: number, pref: 'jeune' | 'moyen' | 'vieux') => {
-    const comp = compartments.find(c => c.id === compartmentId);
-    const cheese = initialCheeses.find(c => c.id === comp?.selectedItemId);
-    if (!cheese) return;
-    const min = cheese.affinageDureeMin ?? 21;
-    const max = cheese.affinageDureeMax ?? 35;
-    const target = pref === 'jeune' ? min : pref === 'vieux' ? max : Math.round((min + max) / 2);
-    updateCompartment(compartmentId, { preference: pref, targetDurationDays: target });
-  };
-
-  const toggleControl = (control: keyof CompartmentState) => {
+  // Wrapper for toggleControl
+  const onToggleActuator = (control: keyof CompartmentState) => {
     if (!activeCompartmentId) return;
-    const activeComp = compartments.find(c => c.id === activeCompartmentId);
-    if (!activeComp || activeComp.isAutoMode) return;
-    updateCompartment(activeCompartmentId, { [control]: !activeComp[control] });
+    toggleControl(activeCompartmentId, control);
   };
 
-  // ── 4.4 DERIVED DATA ───────────────────────────────────────
+  // ── 2.1 DERIVED DATA ───────────────────────────────────────
 
   const activeComp = compartments.find(c => c.id === activeCompartmentId);
   const activeContentMeta = activeComp ? CONTENT_TYPE_META[activeComp.contentType] : null;
 
   const activeItem = useMemo(() => {
     if (!activeComp?.selectedItemId) return null;
-    if (activeComp.contentType === 'fromage') return initialCheeses.find(c => c.id === activeComp.selectedItemId) ?? null;
-    if (activeComp.contentType === 'viande') return VIANDES.find(v => v.id === activeComp.selectedItemId) ?? null;
-    if (activeComp.contentType === 'vin') return VINS.find(v => v.id === activeComp.selectedItemId) ?? null;
+    if (activeComp.contentType === 'fromage') return cheeses.find(c => c.id === activeComp.selectedItemId) ?? null;
+    if (activeComp.contentType === 'viande') return viandes.find(v => v.id === activeComp.selectedItemId) ?? null;
+    if (activeComp.contentType === 'vin') return vins.find(v => v.id === activeComp.selectedItemId) ?? null;
     return null;
-  }, [activeComp, initialCheeses]);
+  }, [activeComp, cheeses, viandes, vins]);
 
   const cheesesByCategory = useMemo(() =>
-    initialCheeses.reduce((acc, c) => {
+    cheeses.reduce((acc, c) => {
       const cat = c.categorie ?? 'Autres';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(c);
       return acc;
     }, {} as Record<string, CheeseProfile[]>),
-    [initialCheeses]
+    [cheeses]
+  );
+
+  const viandesByCategory = useMemo(() =>
+    viandes.reduce((acc, v) => {
+      if (!acc[v.categorie]) acc[v.categorie] = [];
+      acc[v.categorie].push(v);
+      return acc;
+    }, {} as Record<string, ViandeProfile[]>),
+    [viandes]
+  );
+
+  const vinsByType = useMemo(() =>
+    vins.reduce((acc, v) => {
+      if (!acc[v.type]) acc[v.type] = [];
+      acc[v.type].push(v);
+      return acc;
+    }, {} as Record<string, VinProfile[]>),
+    [vins]
   );
 
   const now = Date.now();
@@ -312,7 +161,7 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
               return (
                 <button
                   key={ct}
-                  onClick={() => handleContentTypeChange(activeCompartmentId, ct)}
+                  onClick={() => onContentTypeChange(activeCompartmentId, ct)}
                   className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-bold transition-all ${isActive ? `${meta.bgColor} ${meta.borderColor} ${meta.color}` : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'}`}
                 >
                   <span className="text-lg">{meta.icon}</span>
@@ -325,9 +174,26 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
 
         {/* ── Item Selector Dropdown ── */}
         <div className="relative">
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-            {activeContentMeta?.label} sélectionné(e)
-          </label>
+          <div className="flex justify-between items-center mb-2">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+              {activeContentMeta?.label} sélectionné(e)
+            </label>
+            <button
+              onClick={() => {
+                setModalProductType(activeComp.contentType);
+                setFormData(prev => ({
+                  ...prev,
+                  nom: '',
+                  categorie: '',
+                  notes: ''
+                }));
+                setIsModalOpen(true);
+              }}
+              className="text-xs font-bold text-amber-900 hover:text-amber-800 flex items-center gap-1 transition-colors bg-amber-50 px-2 py-0.5 rounded border border-amber-900/10"
+            >
+              ➕ Ajouter
+            </button>
+          </div>
           <div
             className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-slate-800 cursor-pointer hover:border-amber-900/40 transition-colors flex justify-between items-center text-sm"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -338,6 +204,24 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
 
           {isDropdownOpen && (
             <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl max-h-64 overflow-y-auto">
+              {/* Add custom option */}
+              <div
+                className="px-4 py-2.5 cursor-pointer text-amber-900 font-bold hover:bg-amber-50 text-sm border-b border-slate-100 flex items-center gap-2"
+                onClick={() => {
+                  setModalProductType(activeComp.contentType);
+                  setFormData(prev => ({
+                    ...prev,
+                    nom: '',
+                    categorie: '',
+                    notes: ''
+                  }));
+                  setIsModalOpen(true);
+                  setIsDropdownOpen(false);
+                }}
+              >
+                <span>➕</span> Créer un produit personnalisé...
+              </div>
+
               {/* Clear option */}
               <div
                 className="px-4 py-2.5 cursor-pointer text-slate-500 hover:bg-slate-50 text-sm border-b border-slate-100 flex items-center gap-2"
@@ -360,7 +244,7 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
               ))}
 
               {/* Viandes */}
-              {activeComp.contentType === 'viande' && Object.entries(VIANDES_BY_CATEGORY).map(([cat, items]) => (
+              {activeComp.contentType === 'viande' && Object.entries(viandesByCategory).map(([cat, items]) => (
                 <div key={cat}>
                   <div className="bg-slate-50 text-red-900 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 sticky top-0 border-b border-slate-100">{cat}</div>
                   {items.map(v => (
@@ -373,7 +257,7 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
               ))}
 
               {/* Vins */}
-              {activeComp.contentType === 'vin' && Object.entries(VINS_BY_TYPE).map(([type, items]) => (
+              {activeComp.contentType === 'vin' && Object.entries(vinsByType).map(([type, items]) => (
                 <div key={type}>
                   <div className="bg-slate-50 text-purple-900 text-[10px] font-bold uppercase tracking-wider px-4 py-1.5 sticky top-0 border-b border-slate-100">{type}</div>
                   {items.map(v => (
@@ -407,9 +291,58 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
           </button>
         </div>
 
+        {/* ── Manual Mode Parameters Sliders ── */}
+        {!activeComp.isAutoMode && (
+          <div className="bg-amber-50/40 border border-amber-900/10 rounded-xl p-4 space-y-4 shadow-sm animate-in fade-in duration-300">
+            <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">Consignes Personnalisées</h4>
+            
+            {/* Custom Temperature Slider */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-600 font-medium">Température Cible :</span>
+                <span className="font-mono font-bold text-amber-900">{(activeComp.customTargetTemp ?? 12).toFixed(1)}°C</span>
+              </div>
+              <input 
+                type="range" 
+                min={activeComp.contentType === 'viande' ? "-2" : "4"} 
+                max="22" 
+                step="0.5"
+                value={activeComp.customTargetTemp ?? 12}
+                onChange={(e) => updateCompartment(activeCompartmentId, { customTargetTemp: parseFloat(e.target.value) })}
+                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-900"
+              />
+              <div className="flex justify-between text-[10px] text-slate-400">
+                <span>{activeComp.contentType === 'viande' ? "-2°C" : "4°C"}</span>
+                <span>22°C</span>
+              </div>
+            </div>
+
+            {/* Custom Humidity Slider */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-slate-600 font-medium">Hygrométrie Cible :</span>
+                <span className="font-mono font-bold text-amber-900">{activeComp.customTargetHumidity ?? 80}%</span>
+              </div>
+              <input 
+                type="range" 
+                min="40" 
+                max="98" 
+                step="1"
+                value={activeComp.customTargetHumidity ?? 80}
+                onChange={(e) => updateCompartment(activeCompartmentId, { customTargetHumidity: parseInt(e.target.value) })}
+                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-900"
+              />
+              <div className="flex justify-between text-[10px] text-slate-400">
+                <span>40%</span>
+                <span>98%</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── Manual Controls ── */}
         <div>
-          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Contrôles manuels</label>
+          <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">État des Actionneurs</label>
           <div className="grid grid-cols-3 gap-2">
             {[
               { key: 'coolerActive' as const,      label: 'Froid',        activeClass: 'bg-blue-100 text-blue-800 border-blue-200' },
@@ -418,9 +351,9 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
             ].map(({ key, label, activeClass }) => (
               <button
                 key={key}
-                onClick={() => toggleControl(key)}
+                onClick={() => onToggleActuator(key)}
                 disabled={activeComp.isAutoMode}
-                className={`p-2 rounded-lg text-xs font-bold border transition-colors ${activeComp[key] ? activeClass : 'bg-slate-50 text-slate-400 border-slate-200'} ${activeComp.isAutoMode ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`p-2 rounded-lg text-xs font-bold border transition-colors ${activeComp[key] ? activeClass : 'bg-slate-50 text-slate-405 border-slate-200'} ${activeComp.isAutoMode ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {label}
               </button>
@@ -535,10 +468,10 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
 
     let item: CheeseProfile | ViandeProfile | VinProfile | null = null;
     if (comp.contentType === 'fromage' && comp.selectedItemId) item = initialCheeses.find(c => c.id === comp.selectedItemId) ?? null;
-    if (comp.contentType === 'viande' && comp.selectedItemId) item = VIANDES.find(v => v.id === comp.selectedItemId) ?? null;
-    if (comp.contentType === 'vin'    && comp.selectedItemId) item = VINS.find(v => v.id === comp.selectedItemId) ?? null;
+    if (comp.contentType === 'viande' && comp.selectedItemId) item = initialViandes.find(v => v.id === comp.selectedItemId) ?? null;
+    if (comp.contentType === 'vin'    && comp.selectedItemId) item = initialVins.find(v => v.id === comp.selectedItemId) ?? null;
 
-    const targets = getTargetConditions(comp, initialCheeses);
+    const targets = getTargetConditions(comp, initialCheeses, initialViandes, initialVins);
     const isTempOk  = targets ? Math.abs(comp.currentTemp     - targets.targetTemp)  < 1.0 : false;
     const isHygroOk = targets ? Math.abs(comp.currentHumidity - targets.targetHygro) < 5.0 : false;
 
@@ -636,35 +569,438 @@ export default function Dashboard({ initialCheeses }: { initialCheeses: CheesePr
     );
   };
 
-  // ============================================================
-  // SECTION 7 — MAIN RENDER
-  // ============================================================
+  const handleAddProductSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.nom) {
+      setModalError('Le nom du produit est requis.');
+      return;
+    }
+    setIsSubmitting(true);
+    setModalError(null);
 
+    try {
+      const response = await fetch('/api/produits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: modalProductType,
+          data: formData
+        })
+      });
+
+      const resData = await response.json();
+      if (!response.ok) {
+        throw new Error(resData.error || 'Erreur lors de la sauvegarde.');
+      }
+
+      const newItem = resData.item;
+
+      // Update local lists
+      if (modalProductType === 'fromage') {
+        setCheeses(prev => [...prev, newItem].sort((a, b) => a.nom.localeCompare(b.nom)));
+      } else if (modalProductType === 'viande') {
+        setViandes(prev => [...prev, newItem].sort((a, b) => a.nom.localeCompare(b.nom)));
+      } else if (modalProductType === 'vin') {
+        setVins(prev => [...prev, newItem].sort((a, b) => a.nom.localeCompare(b.nom)));
+      }
+
+      // Auto-assign to current compartment if applicable
+      if (activeCompartmentId) {
+        assignItem(activeCompartmentId, newItem.id, modalProductType);
+      }
+
+      // Reset & close
+      setFormData({
+        nom: '',
+        categorie: '',
+        lait: 'Vache',
+        affinageTempMin: '10',
+        affinageTempMax: '14',
+        affinageHygroMin: '85',
+        affinageHygroMax: '90',
+        affinageDureeMin: '15',
+        affinageDureeMax: '30',
+        notes: '',
+        temp_conservation_degC: '2',
+        temp_maturation_degC: '2',
+        hygrometrie_pourcent: '80',
+        temp_apres_maturation_degC: '4',
+        temp_vieillissement_degC: '12',
+        temp_service_recommandee_degC: '16'
+      });
+      setIsModalOpen(false);
+    } catch (err: any) {
+      setModalError(err.message || 'Une erreur est survenue.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // ============================================================
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10 text-slate-900">
-
-      {/* ── Left Panel ── */}
-      <div className="xl:col-span-4 space-y-6">
-        <div className="relative z-50 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <h3 className="text-lg font-bold mb-5 text-slate-900 flex items-center gap-2">
-            <span>{activeContentMeta?.icon ?? '⚙️'}</span>
-            Compartiment {activeCompartmentId ? `#${activeCompartmentId}` : ''}
-          </h3>
-          {renderConfigPanel()}
+    <div className="space-y-8">
+      {/* MVP Header Bar */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white border border-slate-200 p-6 rounded-2xl shadow-sm gap-4">
+        <div>
+          <span className="text-amber-800 text-xs font-bold uppercase tracking-widest block mb-1">
+            Console de Contrôle en Temps Réel
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            L'Affine Bouche Connect
+          </h1>
         </div>
+        <button
+          onClick={(e) => e.preventDefault()}
+          className="bg-amber-900 hover:bg-amber-800 text-white px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-md shadow-amber-900/10 flex items-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <Bluetooth className="w-4 h-4 animate-pulse" />
+          Se connecter à ma cave
+        </button>
       </div>
 
-      {/* ── Right Panel: Grid ── */}
-      <div className="xl:col-span-8">
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-          <h2 className="text-xl font-bold mb-6 text-amber-900">Cave d'Affinage — 6 Compartiments</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative">
-            <div className="absolute inset-0 border-[8px] border-amber-900/10 rounded-xl pointer-events-none z-0"></div>
-            {compartments.map(comp => renderGridCard(comp))}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10 text-slate-900">
+
+        {/* ── Left Panel ── */}
+        <div className="xl:col-span-4 space-y-6">
+          <div className="relative z-50 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 className="text-lg font-bold mb-5 text-slate-900 flex items-center gap-2">
+              <span>{activeContentMeta?.icon ?? '⚙️'}</span>
+              Compartiment {activeCompartmentId ? `#${activeCompartmentId}` : ''}
+            </h3>
+            {renderConfigPanel()}
           </div>
         </div>
+
+        {/* ── Right Panel: Grid ── */}
+        <div className="xl:col-span-8">
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+            <h2 className="text-xl font-bold mb-6 text-amber-900">Cave d'Affinage — 6 Compartiments</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative">
+              <div className="absolute inset-0 border-[8px] border-amber-900/10 rounded-xl pointer-events-none z-0"></div>
+              {compartments.map(comp => renderGridCard(comp))}
+            </div>
+          </div>
+        </div>
+
       </div>
 
+      {/* ── Premium Product Creation Modal ── */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 space-y-6 relative animate-in zoom-in-95 duration-200">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors text-xl font-bold p-2"
+            >
+              ✕
+            </button>
+
+            <div>
+              <span className="text-amber-800 text-xs font-bold uppercase tracking-wider block mb-1">Personnalisation</span>
+              <h3 className="text-2xl font-black tracking-tight text-slate-900">Ajouter mon produit</h3>
+              <p className="text-slate-500 text-xs mt-1">Créez votre propre profil et configurez ses consignes d'affinage optimales.</p>
+            </div>
+
+            {/* Type selector tabs inside Modal */}
+            <div className="grid grid-cols-3 gap-2 bg-slate-50 p-1 rounded-2xl border border-slate-100">
+              {(['fromage', 'viande', 'vin'] as ContentType[]).map(type => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setModalProductType(type)}
+                  className={`py-2 px-3 text-xs font-extrabold rounded-xl transition-all ${
+                    modalProductType === type
+                      ? 'bg-amber-900 text-white shadow-sm'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  {type === 'fromage' ? '🧀 Fromage' : type === 'viande' ? '🥩 Viande' : '🍷 Vin'}
+                </button>
+              ))}
+            </div>
+
+            {modalError && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl font-semibold">
+                ⚠️ {modalError}
+              </div>
+            )}
+
+            <form onSubmit={handleAddProductSubmit} className="space-y-4 text-xs font-semibold text-slate-700">
+              {/* Common Name */}
+              <div className="space-y-1.5">
+                <label className="block text-slate-600">Nom du produit <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  required
+                  placeholder="ex: Mon Reblochon Fermier, Saucisse de sanglier..."
+                  value={formData.nom}
+                  onChange={(e) => setFormData(prev => ({ ...prev, nom: e.target.value }))}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                />
+              </div>
+
+              {/* Dynamic inputs based on Type */}
+              {modalProductType === 'fromage' && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Catégorie</label>
+                      <input
+                        type="text"
+                        placeholder="ex: Pâte pressée non cuite"
+                        value={formData.categorie}
+                        onChange={(e) => setFormData(prev => ({ ...prev, categorie: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Type de lait</label>
+                      <select
+                        value={formData.lait}
+                        onChange={(e) => setFormData(prev => ({ ...prev, lait: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      >
+                        <option value="Vache">Vache</option>
+                        <option value="Chèvre">Chèvre</option>
+                        <option value="Brebis">Brebis</option>
+                        <option value="Buffle">Buffle</option>
+                        <option value="Autre">Autre</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Affinage Min (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.affinageTempMin}
+                        onChange={(e) => setFormData(prev => ({ ...prev, affinageTempMin: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Affinage Max (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.affinageTempMax}
+                        onChange={(e) => setFormData(prev => ({ ...prev, affinageTempMax: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Hygrométrie Min (%)</label>
+                      <input
+                        type="number"
+                        value={formData.affinageHygroMin}
+                        onChange={(e) => setFormData(prev => ({ ...prev, affinageHygroMin: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Hygrométrie Max (%)</label>
+                      <input
+                        type="number"
+                        value={formData.affinageHygroMax}
+                        onChange={(e) => setFormData(prev => ({ ...prev, affinageHygroMax: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Durée Min (jours)</label>
+                      <input
+                        type="number"
+                        value={formData.affinageDureeMin}
+                        onChange={(e) => setFormData(prev => ({ ...prev, affinageDureeMin: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Durée Max (jours)</label>
+                      <input
+                        type="number"
+                        value={formData.affinageDureeMax}
+                        onChange={(e) => setFormData(prev => ({ ...prev, affinageDureeMax: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-slate-600">Notes & Conseils</label>
+                    <textarea
+                      placeholder="ex: Brosser à l'eau salée deux fois par semaine..."
+                      value={formData.notes}
+                      onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                      rows={2}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors resize-none"
+                    />
+                  </div>
+                </>
+              )}
+
+              {modalProductType === 'viande' && (
+                <>
+                  <div className="space-y-1.5">
+                    <label className="block text-slate-600">Catégorie</label>
+                    <input
+                      type="text"
+                      placeholder="ex: Boeuf (Bifteck), Porc (Longe)..."
+                      value={formData.categorie}
+                      onChange={(e) => setFormData(prev => ({ ...prev, categorie: e.target.value }))}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Conservation (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.temp_conservation_degC}
+                        onChange={(e) => setFormData(prev => ({ ...prev, temp_conservation_degC: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Maturation (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.temp_maturation_degC}
+                        onChange={(e) => setFormData(prev => ({ ...prev, temp_maturation_degC: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Hygrométrie (%)</label>
+                      <input
+                        type="number"
+                        value={formData.hygrometrie_pourcent}
+                        onChange={(e) => setFormData(prev => ({ ...prev, hygrometrie_pourcent: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Post-Maturation (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.temp_apres_maturation_degC}
+                        onChange={(e) => setFormData(prev => ({ ...prev, temp_apres_maturation_degC: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {modalProductType === 'vin' && (
+                <>
+                  <div className="space-y-1.5">
+                    <label className="block text-slate-600">Type de Vin (Catégorie)</label>
+                    <select
+                      value={formData.categorie}
+                      onChange={(e) => setFormData(prev => ({ ...prev, categorie: e.target.value }))}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                    >
+                      <option value="">-- Sélectionner --</option>
+                      <option value="Rouge">Rouge</option>
+                      <option value="Blanc">Blanc</option>
+                      <option value="Rosé">Rosé</option>
+                      <option value="Jaune">Jaune</option>
+                      <option value="Pétillant / Champagne">Pétillant / Champagne</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Conservation (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.temp_conservation_degC}
+                        onChange={(e) => setFormData(prev => ({ ...prev, temp_conservation_degC: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Vieillissement (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.temp_vieillissement_degC}
+                        onChange={(e) => setFormData(prev => ({ ...prev, temp_vieillissement_degC: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Hygrométrie (%)</label>
+                      <input
+                        type="number"
+                        value={formData.hygrometrie_pourcent}
+                        onChange={(e) => setFormData(prev => ({ ...prev, hygrometrie_pourcent: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-slate-600">Temp. Service (°C)</label>
+                      <input
+                        type="number"
+                        step="0.5"
+                        value={formData.temp_service_recommandee_degC}
+                        onChange={(e) => setFormData(prev => ({ ...prev, temp_service_recommandee_degC: e.target.value }))}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-800 focus:border-amber-900 focus:ring-1 focus:ring-amber-900 outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors text-center cursor-pointer"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex-1 py-3 bg-amber-900 hover:bg-amber-800 text-white rounded-xl font-bold transition-colors shadow-lg shadow-amber-900/10 text-center flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      Sauvegarde...
+                    </>
+                  ) : (
+                    'Ajouter à la cave'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -9,9 +9,17 @@ const prisma = new PrismaClient();
 export const revalidate = 0;
 
 export default async function DashboardPage() {
-  const cheeses = await prisma.cheeseProfile.findMany({
-    orderBy: { nom: 'asc' }
-  });
+  const [cheeses, viandes, vins] = await Promise.all([
+    prisma.cheeseProfile.findMany({
+      orderBy: { nom: 'asc' }
+    }),
+    prisma.viandeProfile.findMany({
+      orderBy: { nom: 'asc' }
+    }),
+    prisma.vinProfile.findMany({
+      orderBy: { nom: 'asc' }
+    })
+  ]);
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 md:p-12 text-slate-900">
@@ -20,7 +28,7 @@ export default async function DashboardPage() {
           <ArrowLeft className="w-5 h-5 mr-2" />
           Retour à la boutique
         </Link>
-        <Dashboard initialCheeses={cheeses} />
+        <Dashboard initialCheeses={cheeses} initialViandes={viandes} initialVins={vins} />
       </div>
     </div>
   );

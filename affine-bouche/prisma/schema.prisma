@@ -47,3 +47,27 @@ model MockCave {
   humidifierActive Boolean  @default(false)
   updatedAt        DateTime @updatedAt
 }
+
+model ViandeProfile {
+  id                         String   @id
+  nom                        String
+  categorie                  String
+  temp_conservation_degC     Float
+  temp_maturation_degC       Float
+  hygrometrie_pourcent       Float
+  temp_apres_maturation_degC Float
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+}
+
+model VinProfile {
+  id                            String   @id
+  nom                           String
+  type                          String
+  temp_conservation_degC        Float
+  temp_vieillissement_degC      Float
+  hygrometrie_pourcent          Float
+  temp_service_recommandee_degC Float
+  createdAt                     DateTime @default(now())
+  updatedAt                     DateTime @updatedAt
+}

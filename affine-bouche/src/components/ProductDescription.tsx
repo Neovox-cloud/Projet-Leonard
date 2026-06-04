@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   ThermometerSun,
@@ -24,7 +25,17 @@ import {
 
 /* ─────────────────── DONNÉES ─────────────────── */
 
-const specs = [
+interface SpecItem {
+  icon: React.ComponentType<any>;
+  color: string;
+  bg: string;
+  border: string;
+  title: string;
+  detail: string;
+  explanation: string;
+}
+
+const specs: SpecItem[] = [
   {
     icon: ThermometerSun,
     color: 'text-orange-500',
@@ -32,6 +43,7 @@ const specs = [
     border: 'border-orange-100',
     title: 'Régulation thermique',
     detail: 'Plage 2°C à 22°C, précision ±0,5°C. Module Peltier + ventilateur contrôlé.',
+    explanation: "Le module Peltier est un composant thermoélectrique actif. Lorsqu'un courant électrique le traverse, l'une de ses faces se refroidit fortement tandis que l'autre se réchauffe. En inversant simplement la polarité du courant, on peut basculer instantanément de la production de froid à celle de chaud. Ce système est extrêmement silencieux, ultra-précis, et évite les vibrations des compresseurs de réfrigérateurs traditionnels qui perturbent la sédimentation du vin et la maturation des fromages et viandes.",
   },
   {
     icon: Droplets,
@@ -40,6 +52,7 @@ const specs = [
     border: 'border-teal-100',
     title: "Contrôle de l'humidité",
     detail: "Hygrométrie 70% à 95%, précision ±3%. Humidificateur ultrasonique + déshumidificateur.",
+    explanation: "Le brumisateur à ultrasons utilise une pastille piézoélectrique oscillant à très haute fréquence (plus de 1,5 million de vibrations par seconde). Ces vibrations transforment l'eau liquide en un brouillard de micro-gouttelettes extrêmement fines (brouillard sec) sans chauffer l'eau. Pour l'affinage ou la conservation, cela garantit une hygrométrie stable jusqu'à 95% sans détremper les surfaces ou moisir les produits.",
   },
   {
     icon: Wind,
@@ -48,6 +61,7 @@ const specs = [
     border: 'border-indigo-100',
     title: "Filtration des odeurs",
     detail: "Filtre à charbon actif intégré. Zéro odeur résiduelle vers l'extérieur.",
+    explanation: "Le charbon actif possède une structure poreuse exceptionnelle (un gramme de charbon actif possède une surface interne de plus de 1000 m²). Les molécules odorantes sont capturées et piégées dans ces micro-pores par adsorption physique. Le flux d'air interne forcé traverse ce filtre en continu, garantissant l'absence totale de transfert d'odeurs entre les compartiments (ex: vin à côté de fromage corsé) et aucune odeur à l'extérieur de la cave.",
   },
   {
     icon: Smartphone,
@@ -56,6 +70,7 @@ const specs = [
     border: 'border-blue-100',
     title: 'Connectivité',
     detail: 'Bluetooth, application mobile iOS/Android. Portée stable 15 m. Configuration en moins de 5 minutes.',
+    explanation: "La cave intègre une puce Bluetooth Low Energy (BLE) pour communiquer directement avec votre smartphone. Ce protocole consomme très peu d'énergie et offre une liaison directe et sécurisée sans nécessiter de connexion Internet Wi-Fi. Vous pouvez ajuster les consignes, surveiller la température historique ou déclencher un affinage en restant à proximité de l'appareil.",
   },
   {
     icon: Activity,
@@ -64,6 +79,7 @@ const specs = [
     border: 'border-violet-100',
     title: 'Capteurs embarqués',
     detail: 'Température, hygrométrie, CO₂, horloge/timer. Afficheur OLED intégré.',
+    explanation: "La cave utilise des capteurs électroniques à semi-conducteurs de dernière génération (SHT). Ils mesurent simultanément la température au dixième de degré près et le taux d'humidité relative à ±3% près. Un capteur de CO₂ évalue également le taux de renouvellement de l'air nécessaire. L'écran OLED à haut contraste affiche en continu ces valeurs sur la façade de chaque bloc.",
   },
   {
     icon: ShieldCheck,
@@ -72,6 +88,7 @@ const specs = [
     border: 'border-emerald-100',
     title: 'Indice de protection',
     detail: "IP65, résistant à la condensation et à l'humidité interne.",
+    explanation: "L'indice IP65 garantit que le module électronique interne est totalement protégé contre les poussières et étanche aux jets d'eau ou à la forte condensation. L'affinage exigeant des taux d'humidité supérieurs à 90%, tous les composants électriques sont tropicalisés (recouverts d'un vernis protecteur) et scellés pour éviter tout court-circuit ou corrosion précoce dans cet environnement saturé en eau.",
   },
   {
     icon: Zap,
@@ -80,6 +97,7 @@ const specs = [
     border: 'border-yellow-100',
     title: 'Consommation énergétique',
     detail: 'Moins de 120 kWh/an.',
+    explanation: "Contrairement aux compresseurs énergivores, la cave utilise une régulation proportionnelle intelligente. Le courant envoyé au module Peltier est régulé finement en continu (PWM) plutôt que par de simples cycles de marche/arrêt. Grâce à une isolation en mousse polyuréthane haute densité de 4 cm d'épaisseur, la déperdition thermique est minimale, limitant la consommation à moins de 120 kWh/an (l'équivalent d'une simple ampoule LED).",
   },
   {
     icon: Award,
@@ -88,6 +106,7 @@ const specs = [
     border: 'border-rose-100',
     title: 'Certification',
     detail: 'Marquage CE, conforme directive Basse Tension 2014/35/UE.',
+    explanation: "La cave est conforme aux directives européennes Basse Tension (2014/35/UE) et de Compatibilité Électromagnétique (CEM 2014/30/UE). Toute l'électronique de puissance est isolée dans un compartiment technique hermétique, et l'alimentation générale transforme le courant alternatif 230V en une tension sécurisée de 12V ou 24V continus (TBTS - Très Basse Tension de Sécurité) à l'intérieur de la cave.",
   },
   {
     icon: Layers,
@@ -96,6 +115,7 @@ const specs = [
     border: 'border-amber-100',
     title: 'Matériaux',
     detail: 'Surfaces intérieures inox 304 sans BPA, conformes règlements CE 852/2004 et 1935/2004.',
+    explanation: "L'inox 304 (acier inoxydable austénitique allié au chrome-nickel) est le matériau de référence en restauration professionnelle. Sa surface lisse et non poreuse empêche le développement des bactéries et résiste à l'acidité dégagée par les fromages en affinage. Tous les joints et plastiques utilisés sont exempts de Bisphénol A (BPA) et certifiés aptes au contact alimentaire direct.",
   },
   {
     icon: Box,
@@ -104,6 +124,7 @@ const specs = [
     border: 'border-stone-100',
     title: 'Format',
     detail: "40 × 40 × 40 cm par bloc. Les blocs s'empilent ou se disposent côte à côte.",
+    explanation: "Chaque bloc est doté de connecteurs magnétiques rapides sur les faces supérieure et latérales. Ces connecteurs transmettent à la fois l'alimentation électrique et les données de communication (bus de données). Vous pouvez ainsi empiler jusqu'à 4 modules verticalement ou horizontalement avec un seul cordon d'alimentation principal branché sur la prise murale.",
   },
   {
     icon: Volume2,
@@ -112,6 +133,7 @@ const specs = [
     border: 'border-cyan-100',
     title: 'Niveau sonore',
     detail: 'Moins de 35 dB(A).',
+    explanation: "Le seul élément mobile de la cave est un ventilateur silencieux de 80 mm. Il utilise des paliers fluides hydrodynamiques (FDB) à la place des roulements à billes classiques, ce qui réduit considérablement le frottement mécanique et les vibrations. La vitesse de rotation est régulée dynamiquement selon les besoins de froid, maintenant le niveau sonore sous la barre des 35 dB(A), soit le bruit d'un chuchotement dans une bibliothèque.",
   },
 ];
 
@@ -162,9 +184,9 @@ const ranges = [
 
 const usages = ['Fromages', 'Vins', 'Viandes maturées', 'Charcuteries'];
 
-/* ─────────────────── COMPOSANT ─────────────────── */
-
 export default function ProductDescription() {
+  const [selectedSpec, setSelectedSpec] = useState<SpecItem | null>(null);
+
   return (
     <section
       id="product-description"
@@ -228,6 +250,7 @@ export default function ProductDescription() {
         <div className="mb-24">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-slate-900 mb-2">Spécifications techniques</h3>
+            <p className="text-slate-500 text-sm mb-4">Cliquez sur un module pour comprendre sa technologie et son principe de fonctionnement.</p>
             <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-amber-800 rounded-full mx-auto" />
           </div>
 
@@ -237,7 +260,8 @@ export default function ProductDescription() {
               return (
                 <div
                   key={spec.title}
-                  className="group flex gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-amber-300 hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-[320px] md:w-[280px] lg:w-[300px] xl:w-[280px] flex-grow max-w-[360px]"
+                  onClick={() => setSelectedSpec(spec)}
+                  className="group flex gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-amber-300 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-205 w-full sm:w-[320px] md:w-[280px] lg:w-[300px] xl:w-[280px] flex-grow max-w-[360px] cursor-pointer"
                 >
                   <div
                     className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-amber-50 border border-amber-100 group-hover:scale-110 transition-transform"
@@ -247,6 +271,9 @@ export default function ProductDescription() {
                   <div className="min-w-0">
                     <p className="font-semibold text-slate-800 text-sm leading-snug mb-1">{spec.title}</p>
                     <p className="text-slate-500 text-xs leading-relaxed">{spec.detail}</p>
+                    <span className="text-[10px] text-amber-900 font-bold mt-2 inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      En savoir plus ➔
+                    </span>
                   </div>
                 </div>
               );
@@ -337,6 +364,51 @@ export default function ProductDescription() {
         </div>
 
       </div>
+
+      {/* ── Premium Tech Detail Explanation Modal ── */}
+      {selectedSpec && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 md:p-8 max-w-lg w-full relative animate-in zoom-in-95 duration-200 space-y-5">
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedSpec(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors text-xl font-bold p-2 cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-50 border border-amber-100 shrink-0">
+                {React.createElement(selectedSpec.icon, { className: "w-6 h-6 text-amber-700" })}
+              </div>
+              <div>
+                <h4 className="text-lg font-black tracking-tight text-slate-900">{selectedSpec.title}</h4>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Fiche d'explication technologique</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-700 leading-relaxed bg-amber-50/50 border border-amber-900/5 p-4 rounded-2xl italic font-medium">
+              "{selectedSpec.detail}"
+            </p>
+
+            <div className="space-y-2">
+              <h5 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Comment ça fonctionne ?</h5>
+              <p className="text-xs text-slate-600 leading-relaxed text-justify">
+                {selectedSpec.explanation}
+              </p>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 flex justify-end">
+              <button
+                onClick={() => setSelectedSpec(null)}
+                className="bg-amber-900 hover:bg-amber-800 text-white font-bold text-xs px-6 py-3 rounded-xl transition-all shadow-md shadow-amber-900/10 cursor-pointer"
+              >
+                Compris !
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
