@@ -24,7 +24,7 @@ const specs = [
   { title: 'Consommation énergétique', detail: 'Moins de 120 kWh/an.' },
   { title: 'Certification', detail: 'Marquage CE, conforme directive Basse Tension 2014/35/UE.' },
   { title: 'Matériaux', detail: 'Surfaces intérieures inox 304 sans BPA, conformes règlements CE 852/2004 et 1935/2004.' },
-  { title: 'Format', detail: "40 x 40 x 40 cm par bloc. Les blocs s'empilent ou se disposent côte à côte." },
+  { title: 'Format', detail: "50 x 50 x 50 cm (extérieur) / 40 x 40 x 40 cm (intérieur utile). Empilables." },
   { title: 'Niveau sonore', detail: 'Moins de 35 dB(A).' },
 ];
 

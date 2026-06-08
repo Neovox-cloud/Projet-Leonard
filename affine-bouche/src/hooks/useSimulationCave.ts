@@ -36,6 +36,12 @@ export interface VinProfile {
   temp_service_recommandee_degC: number;
 }
 
+export interface CompartmentHistoryEntry {
+  time: string;
+  temp: number;
+  humidity: number;
+}
+
 export interface CompartmentState {
   id: number;
   contentType: ContentType;
@@ -53,6 +59,7 @@ export interface CompartmentState {
   fanActive: boolean;
   customTargetTemp?: number;
   customTargetHumidity?: number;
+  history: CompartmentHistoryEntry[];
 }
 
 export function getDefaultTemp(contentType: ContentType): number {
@@ -114,7 +121,8 @@ export function getTargetConditions(
 export function useSimulationCave(
   initialCheeses: CheeseProfile[],
   initialViandes: ViandeProfile[],
-  initialVins: VinProfile[]
+  initialVins: VinProfile[],
+  connectedDevice: string | null = null
 ) {
   const [compartments, setCompartments] = useState<CompartmentState[]>(
     Array.from({ length: 6 }).map((_, index) => ({
@@ -134,27 +142,17 @@ export function useSimulationCave(
       fanActive: false,
       customTargetTemp: 12.0,
       customTargetHumidity: 85,
+      history: [
+        {
+          time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          temp: 14.5,
+          humidity: 70.0
+        }
+      ]
     }))
   );
 
   const [tick, setTick] = useState(0);
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('affine_bouche_compartments');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length === 6) {
-            setCompartments(parsed);
-          }
-        } catch (e) {
-          console.error("Failed to load compartments from localStorage", e);
-        }
-      }
-    }
-  }, []);
 
   // Live simulation loop
   useEffect(() => {
@@ -183,13 +181,20 @@ export function useSimulationCave(
         if (humidifierActive) hygroDelta = 0.3;
         if (coolerActive && !humidifierActive) hygroDelta -= 0.1;
 
+        const nextTemp = Number((currentTemp + tempDelta).toFixed(2));
+        const nextHygro = Number((Math.min(100, Math.max(0, currentHumidity + hygroDelta))).toFixed(2));
+
+        const timeStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const newHistoryEntry = { time: timeStr, temp: nextTemp, humidity: nextHygro };
+
         return {
           ...comp,
-          currentTemp: Number((currentTemp + tempDelta).toFixed(2)),
-          currentHumidity: Number((Math.min(100, Math.max(0, currentHumidity + hygroDelta))).toFixed(2)),
+          currentTemp: nextTemp,
+          currentHumidity: nextHygro,
           coolerActive,
           humidifierActive,
           fanActive,
+          history: [...(comp.history || []), newHistoryEntry].slice(-30)
         };
       }));
     }, 1000);
@@ -197,11 +202,31 @@ export function useSimulationCave(
     return () => clearInterval(interval);
   }, [initialCheeses, initialViandes, initialVins]);
 
+  const getStorageKey = () => {
+    return connectedDevice 
+      ? `affine_bouche_compartments_${connectedDevice}` 
+      : 'affine_bouche_compartments';
+  };
+
   const updateCompartment = (id: number, updates: Partial<CompartmentState>) => {
     setCompartments(prev => {
       const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('affine_bouche_compartments', JSON.stringify(updated));
+        localStorage.setItem(getStorageKey(), JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const clearAllCompartments = () => {
+    setCompartments(prev => {
+      const updated = prev.map(c => ({
+        ...c,
+        selectedItemId: null,
+        startDate: null,
+      }));
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(getStorageKey());
       }
       return updated;
     });
@@ -235,8 +260,18 @@ export function useSimulationCave(
         startDate: Date.now(),
         targetDurationDays: Math.round((min + max) / 2),
       });
-    } else {
-      updateCompartment(compartmentId, { selectedItemId: itemId, startDate: Date.now() });
+    } else if (contentType === 'viande') {
+      updateCompartment(compartmentId, {
+        selectedItemId: itemId,
+        startDate: Date.now(),
+        targetDurationDays: 45, // 45 days default dry aging
+      });
+    } else if (contentType === 'vin') {
+      updateCompartment(compartmentId, {
+        selectedItemId: itemId,
+        startDate: Date.now(),
+        targetDurationDays: 365, // 365 days default aging / conservation
+      });
     }
   };
 
@@ -256,12 +291,45 @@ export function useSimulationCave(
     updateCompartment(compartmentId, { [control]: !activeComp[control] });
   };
 
+  const loadSavedCompartments = (device: string | null = connectedDevice) => {
+    if (typeof window !== 'undefined') {
+      const key = device 
+        ? `affine_bouche_compartments_${device}` 
+        : 'affine_bouche_compartments';
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length === 6) {
+            setCompartments(parsed);
+            return;
+          }
+        } catch (e) {
+          console.error("Failed to load compartments from localStorage", e);
+        }
+      }
+    }
+    // Default fallback if no saved data
+    setCompartments(prev => prev.map(c => ({ ...c, selectedItemId: null, startDate: null })));
+  };
+
+  const clearCompartmentsState = () => {
+    setCompartments(prev => prev.map(c => ({
+      ...c,
+      selectedItemId: null,
+      startDate: null,
+    })));
+  };
+
   return {
     compartments,
     updateCompartment,
     handleContentTypeChange,
     assignItem,
     changePreference,
-    toggleControl
+    toggleControl,
+    clearAllCompartments,
+    loadSavedCompartments,
+    clearCompartmentsState
   };
 }

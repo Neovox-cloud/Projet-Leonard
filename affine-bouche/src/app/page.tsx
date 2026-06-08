@@ -2,12 +2,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ThermometerSun, Droplets, Wind, ShieldCheck, ChevronRight, ShoppingCart } from 'lucide-react';
 import ProductDescription from '@/components/ProductDescription';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-amber-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-105 font-sans selection:bg-amber-200 transition-colors">
       {/* Navigation */}
-      <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-slate-200">
+      <nav className="fixed w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-800 transition-colors">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Image 
@@ -18,19 +19,20 @@ export default function Home() {
               className="object-contain h-10 w-auto"
               priority
             />
-            <span className="text-2xl font-bold tracking-tighter text-slate-900">
+            <span className="text-2xl font-bold tracking-tighter text-slate-900 dark:text-white">
               L'Affine Bouche
             </span>
           </Link>
           <div className="flex gap-6 items-center">
-            <Link href="#ecam-engineers" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">Caractéristiques</Link>
-            <Link href="/configurateur" className="text-sm font-medium text-amber-750 hover:text-amber-900 transition">
+            <Link href="#ecam-engineers" className="text-sm font-medium text-slate-650 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-500 transition">Caractéristiques</Link>
+            <Link href="/configurateur" className="text-sm font-medium text-amber-750 dark:text-amber-500 hover:text-amber-900 dark:hover:text-amber-400 transition">
               Configurateur
             </Link>
-            <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">
+            <Link href="/dashboard" className="text-sm font-medium text-slate-650 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-500 transition">
               Dashboard (MVP)
             </Link>
-            <Link href="/configurateur" className="bg-amber-900 hover:bg-amber-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
+            <ThemeToggle />
+            <Link href="/configurateur" className="bg-amber-900 hover:bg-amber-800 dark:bg-amber-800 dark:hover:bg-amber-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" />
               Configurer
             </Link>
