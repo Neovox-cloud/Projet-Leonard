@@ -14,12 +14,7 @@ import ThemeToggle from './ThemeToggle';
 import HistoryChart from './HistoryChart';
 import ProductModal from './ProductModal';
 import CompartmentCard from './CompartmentCard';
-
-const CONTENT_TYPE_META: Record<ContentType, { label: string; icon: string; color: string; bgColor: string; borderColor: string }> = {
-  fromage: { label: 'Fromage', icon: '🧀', color: 'text-amber-900 dark:text-amber-305', bgColor: 'bg-amber-50 dark:bg-amber-950/20', borderColor: 'border-amber-900/60 dark:border-amber-700/60' },
-  viande: { label: 'Viande',  icon: '🥩', color: 'text-red-900 dark:text-red-305',   bgColor: 'bg-red-50 dark:bg-red-950/20',   borderColor: 'border-red-900/60 dark:border-red-700/60' },
-  vin:    { label: 'Vin',     icon: '🍷', color: 'text-purple-900 dark:text-purple-305', bgColor: 'bg-purple-50 dark:bg-purple-950/20', borderColor: 'border-purple-900/60 dark:border-purple-700/60' },
-};
+import { CONTENT_TYPE_META } from '../data/constants';
 
 export default function Dashboard({ 
   initialCheeses, 
@@ -39,6 +34,7 @@ export default function Dashboard({
   const [connectedDevice, setConnectedDevice] = useState<string | null>(null);
   const [showBluetoothModal, setShowBluetoothModal] = useState(false);
   const [foundDevices, setFoundDevices] = useState<string[]>([]);
+  const [connectionProgress, setConnectionProgress] = useState(0);
 
   const {
     compartments,
@@ -66,6 +62,22 @@ export default function Dashboard({
 
   const connectToDevice = (deviceName: string) => {
     setBluetoothState('connecting');
+    setConnectionProgress(0);
+    
+    const duration = 1800; // 1.8s
+    const step = 40; // update every 40ms
+    const increment = 100 / (duration / step);
+    
+    const interval = setInterval(() => {
+      setConnectionProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return Math.min(100, prev + increment);
+      });
+    }, step);
+
     setTimeout(() => {
       setBluetoothState('connected');
       setConnectedDevice(deviceName);
@@ -73,7 +85,7 @@ export default function Dashboard({
       setTimeout(() => {
         setShowBluetoothModal(false);
       }, 1200);
-    }, 1800);
+    }, duration);
   };
 
   const disconnectDevice = () => {
@@ -147,13 +159,13 @@ export default function Dashboard({
 
   const now = Date.now();
 
-  const handleProductAdded = (newItem: any, type: ContentType) => {
+  const handleProductAdded = (newItem: CheeseProfile | ViandeProfile | VinProfile, type: ContentType) => {
     if (type === 'fromage') {
-      setCheeses(prev => [...prev, newItem].sort((a, b) => a.nom.localeCompare(b.nom)));
+      setCheeses(prev => [...prev, newItem as CheeseProfile].sort((a, b) => a.nom.localeCompare(b.nom)));
     } else if (type === 'viande') {
-      setViandes(prev => [...prev, newItem].sort((a, b) => a.nom.localeCompare(b.nom)));
+      setViandes(prev => [...prev, newItem as ViandeProfile].sort((a, b) => a.nom.localeCompare(b.nom)));
     } else if (type === 'vin') {
-      setVins(prev => [...prev, newItem].sort((a, b) => a.nom.localeCompare(b.nom)));
+      setVins(prev => [...prev, newItem as VinProfile].sort((a, b) => a.nom.localeCompare(b.nom)));
     }
 
     if (activeCompartmentId) {
@@ -465,28 +477,27 @@ export default function Dashboard({
             ))}
           </div>
         </div>
-
-        {/* Real-time History Chart Integration */}
-        <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80">
-          <HistoryChart history={activeComp.history} />
-        </div>
       </div>
     );
   };
 
   return (
-    <div className="space-y-8">
+    <div className="relative min-h-screen py-4 space-y-8 overflow-hidden">
+      {/* Background ambient glows */}
+      <div className="absolute top-12 left-1/4 -z-10 w-[500px] h-[500px] rounded-full bg-amber-500/10 dark:bg-amber-500/5 blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-12 right-1/4 -z-10 w-[600px] h-[600px] rounded-full bg-purple-500/5 dark:bg-purple-900/5 blur-[130px] pointer-events-none"></div>
+
       {/* MVP Header Bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm gap-4 transition-colors">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/60 dark:border-slate-800/80 p-6 sm:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-none gap-6 transition-all duration-500">
         <div>
-          <span className="text-amber-800 dark:text-amber-500 text-xs font-bold uppercase tracking-widest block mb-1">
+          <span className="text-amber-800 dark:text-amber-500 text-xs font-black uppercase tracking-[0.25em] block mb-2">
             Console de Contrôle en Temps Réel
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            L'Affine Bouche Connect
+          <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+            L'Affine Bouche <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-900 dark:from-amber-400 dark:to-amber-600">Connect</span>
           </h1>
         </div>
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-4">
           <ThemeToggle />
           <button
             onClick={() => {
@@ -499,12 +510,20 @@ export default function Dashboard({
             }}
             className={`${
               bluetoothState === 'connected'
-                ? 'bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800'
-                : 'bg-amber-900 hover:bg-amber-800 dark:bg-amber-800 dark:hover:bg-amber-700'
-            } text-white px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-md flex items-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]`}
+                ? 'bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white shadow-lg shadow-green-500/10 hover:scale-[1.02] active:scale-[0.98]'
+                : bluetoothState === 'scanning' || bluetoothState === 'connecting'
+                ? 'bg-amber-900 hover:bg-amber-805 dark:bg-amber-800 dark:hover:bg-amber-700 text-white shadow-lg shadow-amber-900/10 hover:scale-[1.02] active:scale-[0.98]'
+                : 'bg-slate-50/50 dark:bg-slate-950/50 text-slate-650 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900/80 hover:text-slate-900 dark:hover:text-slate-200'
+            } px-5 py-3 rounded-full text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2.5 cursor-pointer`}
           >
-            <Bluetooth className={`w-4 h-4 ${bluetoothState === 'scanning' || bluetoothState === 'connecting' ? 'animate-spin' : bluetoothState === 'connected' ? '' : 'animate-pulse'}`} />
-            {bluetoothState === 'connected' ? `Connecté: ${connectedDevice?.split('#')[1] || 'Cave'}` : 'Se connecter à ma cave'}
+            <Bluetooth className={`w-4 h-4 ${bluetoothState === 'scanning' || bluetoothState === 'connecting' ? 'animate-spin text-white' : bluetoothState === 'connected' ? 'text-white animate-pulse' : 'text-slate-400'}`} />
+            {bluetoothState === 'connected' 
+              ? `Connecté : ${connectedDevice?.split('#')[1] || 'Cave'}` 
+              : bluetoothState === 'scanning'
+              ? 'Recherche...'
+              : bluetoothState === 'connecting'
+              ? 'Connexion...'
+              : 'Cave déconnectée'}
           </button>
         </div>
       </div>
@@ -512,26 +531,48 @@ export default function Dashboard({
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10 text-slate-900 dark:text-slate-100">
         {/* Left Panel */}
         <div className="xl:col-span-4 space-y-6">
-          <div className="relative z-40 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-            <h3 className="text-lg font-bold mb-5 text-slate-900 dark:text-white flex items-center gap-2">
-              <span>{activeContentMeta?.icon ?? '⚙️'}</span>
-              Compartiment {activeCompartmentId ? `#${activeCompartmentId}` : ''}
+          <div className="relative z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/60 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-none transition-all duration-300">
+            <h3 className="text-base font-black uppercase tracking-wider mb-6 text-slate-900 dark:text-white flex items-center gap-2.5 border-b border-slate-100 dark:border-slate-850 pb-4">
+              <span className="text-xl">{activeContentMeta?.icon ?? '⚙️'}</span>
+              <span>Compartiment {activeCompartmentId ? `#${activeCompartmentId}` : ''}</span>
             </h3>
-            <div className={bluetoothState !== 'connected' ? 'filter blur-sm select-none pointer-events-none opacity-30 transition-all' : 'transition-all'}>
+            <div className={bluetoothState !== 'connected' ? 'filter blur-md select-none pointer-events-none opacity-20 transition-all duration-500' : 'transition-all duration-500'}>
               {renderConfigPanel()}
+            </div>
+
+            {/* Real-time History Chart Integration on Left Panel */}
+            <div className="mt-6 pt-6 border-t border-slate-105 dark:border-slate-850">
+              {bluetoothState !== 'connected' ? (
+                <div className="h-[210px] flex flex-col items-center justify-center text-center p-4 bg-slate-50/50 dark:bg-slate-950/20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 transition-colors">
+                  <span className="text-2xl mb-2">📡</span>
+                  <p className="text-xs font-black text-slate-450 dark:text-slate-550 uppercase tracking-wider">Flux hors ligne</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed max-w-[220px] mx-auto">Associez votre cave en Bluetooth pour synchroniser et afficher la télémétrie en temps réel.</p>
+                </div>
+              ) : !activeComp ? (
+                <div className="h-[210px] flex flex-col items-center justify-center text-center p-4 bg-slate-50/50 dark:bg-slate-950/20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 transition-colors">
+                  <span className="text-2xl mb-2">📊</span>
+                  <p className="text-xs font-black text-slate-450 dark:text-slate-550 uppercase tracking-wider">Aucune zone active</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed max-w-[220px] mx-auto">Sélectionnez un compartiment de la cave pour analyser ses courbes de température et d'humidité.</p>
+                </div>
+              ) : (
+                <HistoryChart history={activeComp.history} />
+              )}
             </div>
           </div>
         </div>
 
         {/* Right Panel: Grid */}
         <div className="xl:col-span-8">
-          <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-              <h2 className="text-xl font-bold text-amber-900 dark:text-amber-500 font-sans">Cave d'Affinage — 6 Compartiments</h2>
+          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-8 rounded-3xl border border-slate-200/60 dark:border-slate-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-none transition-all duration-300">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-slate-100 dark:border-slate-850 pb-5">
+              <div>
+                <h2 className="text-lg font-black text-amber-900 dark:text-amber-500 uppercase tracking-wide">Cave d'Affinage</h2>
+                <p className="text-xs text-slate-450 dark:text-slate-500 mt-1">Gérez individuellement les 6 compartiments indépendants</p>
+              </div>
               <button
                 disabled={bluetoothState !== 'connected'}
                 onClick={clearAllCompartments}
-                className="text-xs font-bold text-red-955 dark:text-red-300 hover:text-red-900 dark:hover:text-red-200 flex items-center gap-1.5 transition-all bg-red-50 dark:bg-red-950/20 hover:bg-red-100/70 dark:hover:bg-red-900/20 px-4 py-2.5 rounded-xl border border-red-900/10 dark:border-red-800/10 cursor-pointer shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="text-xs font-bold text-red-955 dark:text-red-300 hover:text-white dark:hover:text-white flex items-center gap-2 transition-all bg-red-50 dark:bg-red-950/20 hover:bg-red-600 dark:hover:bg-red-750 px-4 py-2.5 rounded-xl border border-red-200/30 dark:border-red-900/20 cursor-pointer shadow-sm active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 <span>🗑️</span> Tout vider
               </button>
@@ -539,8 +580,7 @@ export default function Dashboard({
             
             <div className="relative">
               {/* Blurred grid if disconnected */}
-              <div className={`grid grid-cols-1 md:grid-cols-2 gap-5 relative transition-all ${bluetoothState !== 'connected' ? 'filter blur-sm select-none pointer-events-none opacity-30' : ''}`}>
-                <div className="absolute inset-0 border-[8px] border-amber-900/10 dark:border-amber-700/5 rounded-xl pointer-events-none z-0"></div>
+              <div className={`grid grid-cols-1 sm:grid-cols-3 gap-6 relative transition-all duration-700 ${bluetoothState !== 'connected' ? 'filter blur-[8px] select-none pointer-events-none opacity-20' : ''}`}>
                 {compartments.map(comp => (
                   <CompartmentCard 
                     key={comp.id}
@@ -557,22 +597,26 @@ export default function Dashboard({
 
               {/* Overlay CTA if disconnected */}
               {bluetoothState !== 'connected' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center z-20 rounded-xl p-4 text-center">
-                  <div className="bg-white/90 dark:bg-slate-900/90 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-sm space-y-4 backdrop-blur-md">
-                    <Bluetooth className="w-12 h-12 text-amber-800 dark:text-amber-500 mx-auto animate-pulse" />
-                    <h4 className="font-extrabold text-slate-900 dark:text-white text-base">Cave déconnectée</h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                      Veuillez connecter votre console en Bluetooth pour synchroniser et piloter les compartiments de votre cave d'affinage.
-                    </p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center z-20 rounded-2xl p-4 text-center">
+                  <div className="bg-white/95 dark:bg-slate-900/95 p-8 rounded-[2rem] border border-slate-200/80 dark:border-slate-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] max-w-sm space-y-5 backdrop-blur-lg transform hover:scale-[1.01] transition-all duration-500">
+                    <div className="mx-auto w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-955 border border-amber-100 dark:border-amber-900/20 flex items-center justify-center relative shadow-inner">
+                      <Bluetooth className="w-8 h-8 text-amber-850 dark:text-amber-500 animate-pulse" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="font-black text-slate-900 dark:text-white text-lg tracking-tight">Console en attente de liaison</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed px-2">
+                        Veuillez synchroniser votre console en Bluetooth pour surveiller et contrôler vos modules de vieillissement et d'affinage.
+                      </p>
+                    </div>
                     <button
                       onClick={() => {
                         setShowBluetoothModal(true);
                         startScanning();
                       }}
-                      className="bg-amber-900 hover:bg-amber-800 dark:bg-amber-800 dark:hover:bg-amber-700 text-white text-xs font-bold px-6 py-3 rounded-full transition-all shadow-md cursor-pointer inline-flex items-center gap-1.5 hover:scale-105 active:scale-95"
+                      className="w-full bg-amber-900 hover:bg-amber-800 dark:bg-amber-800 dark:hover:bg-amber-700 text-white text-xs font-black uppercase tracking-wider py-3.5 rounded-full transition-all shadow-lg shadow-amber-900/10 cursor-pointer inline-flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
                     >
-                      <Bluetooth className="w-3.5 h-3.5" />
-                      Se connecter en Bluetooth
+                      <Bluetooth className="w-4 h-4" />
+                      Associer via Bluetooth
                     </button>
                   </div>
                 </div>
@@ -646,8 +690,14 @@ export default function Dashboard({
             )}
 
             {bluetoothState === 'connecting' && (
-              <div className="w-full bg-slate-100 dark:bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-205 dark:border-slate-850">
-                <div className="bg-amber-800 dark:bg-amber-600 h-2.5 rounded-full animate-[loading_2s_infinite]" style={{ width: '40%' }}></div>
+              <div className="space-y-3">
+                <div className="w-full bg-slate-100 dark:bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-205 dark:border-slate-850">
+                  <div className="bg-amber-800 dark:bg-amber-600 h-2.5 rounded-full transition-all duration-75" style={{ width: `${connectionProgress}%` }}></div>
+                </div>
+                <div className="flex justify-between items-center text-[10px] text-slate-400 dark:text-slate-500 font-black font-mono px-1">
+                  <span>Liaison radio...</span>
+                  <span>{Math.round(connectionProgress)}%</span>
+                </div>
               </div>
             )}
 

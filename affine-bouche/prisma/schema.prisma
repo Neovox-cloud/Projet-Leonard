@@ -71,3 +71,14 @@ model VinProfile {
   createdAt                     DateTime @default(now())
   updatedAt                     DateTime @updatedAt
 }
+
+model TelemetryEntry {
+  id            String   @id @default(cuid())
+  compartmentId Int
+  deviceName    String   // 'default' or Bluetooth name
+  temp          Float
+  humidity      Float
+  timestamp     DateTime @default(now())
+
+  @@index([deviceName, compartmentId, timestamp])
+}

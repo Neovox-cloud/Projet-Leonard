@@ -10,30 +10,7 @@ import {
   getTargetConditions
 } from '../hooks/useSimulationCave';
 
-// Content meta with light and dark mode classes
-const CONTENT_TYPE_META: Record<ContentType, { label: string; icon: string; color: string; bgColor: string; borderColor: string }> = {
-  fromage: { 
-    label: 'Fromage', 
-    icon: '🧀', 
-    color: 'text-amber-900 dark:text-amber-300', 
-    bgColor: 'bg-amber-50 dark:bg-amber-950/30', 
-    borderColor: 'border-amber-900/60 dark:border-amber-700/60' 
-  },
-  viande: { 
-    label: 'Viande',  
-    icon: '🥩', 
-    color: 'text-red-900 dark:text-red-300',   
-    bgColor: 'bg-red-50 dark:bg-red-950/30',   
-    borderColor: 'border-red-900/60 dark:border-red-700/60' 
-  },
-  vin: { 
-    label: 'Vin',     
-    icon: '🍷', 
-    color: 'text-purple-900 dark:text-purple-300', 
-    bgColor: 'bg-purple-50 dark:bg-purple-950/30', 
-    borderColor: 'border-purple-900/60 dark:border-purple-700/60' 
-  },
-};
+import { CONTENT_TYPE_META } from '../data/constants';
 
 interface CompartmentCardProps {
   comp: CompartmentState;
@@ -90,90 +67,115 @@ export default function CompartmentCard({
   return (
     <div
       onClick={() => setActiveCompartmentId(comp.id)}
-      className={`relative z-10 cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-300 flex flex-col ${
+      className={`relative z-10 cursor-pointer overflow-hidden rounded-2xl border transition-all duration-500 flex flex-col ${
         isActive 
-          ? `${meta.borderColor} scale-[1.02] shadow-md` 
-          : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
-      } bg-white dark:bg-slate-900 p-5 min-h-[220px]`}
+          ? `${meta.borderColor} scale-[1.02] shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-950/50` 
+          : 'border-slate-200/70 dark:border-slate-800/80 hover:border-slate-350 dark:hover:border-slate-700 bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm'
+      } p-6 min-h-[230px] group/card`}
     >
+      {/* Active Ambient Glow behind active card */}
+      {isActive && (
+        <div className={`absolute -inset-1 opacity-20 dark:opacity-10 bg-gradient-to-r ${
+          comp.contentType === 'fromage' ? 'from-amber-500 to-amber-700' : comp.contentType === 'viande' ? 'from-red-500 to-red-750' : 'from-purple-500 to-purple-700'
+        } blur-lg -z-10`}></div>
+      )}
+
       {/* Header */}
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center gap-1.5">
-          <span className="text-sm">{meta.icon}</span>
-          <h4 className="text-slate-400 dark:text-slate-550 font-bold uppercase text-[10px] tracking-wider">Zone {comp.id}</h4>
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-xl filter drop-shadow-sm group-hover/card:scale-110 transition-transform duration-300">{meta.icon}</span>
+          <div>
+            <h4 className="text-slate-400 dark:text-slate-500 font-extrabold uppercase text-[9px] tracking-widest">Zone {comp.id}</h4>
+            <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 capitalize">{meta.label}</span>
+          </div>
         </div>
-        <div className="flex gap-1">
-          {comp.coolerActive && <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" title="Refroidissement actif"></span>}
-          {comp.humidifierActive && <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" title="Brumisateur actif"></span>}
+        <div className="flex gap-1.5 items-center bg-slate-50 dark:bg-slate-950 px-2 py-1 rounded-full border border-slate-100 dark:border-slate-850">
+          <div className="flex gap-1">
+            {comp.coolerActive && (
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" title="Refroidissement actif"></span>
+            )}
+            {comp.humidifierActive && (
+              <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" title="Brumisateur actif"></span>
+            )}
+            {comp.fanActive && (
+              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" title="Ventilation active"></span>
+            )}
+          </div>
+          <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500">
+            {comp.coolerActive || comp.humidifierActive || comp.fanActive ? 'ON' : 'STBY'}
+          </span>
         </div>
       </div>
 
       {/* Empty state */}
       {!item ? (
-        <div className={`flex-1 flex flex-col items-center justify-center gap-1 ${meta.color} opacity-40 dark:opacity-50 hover:opacity-70 dark:hover:opacity-75 transition-opacity`}>
-          <span className="text-3xl">{meta.icon}</span>
-          <span className="text-xs font-medium text-center">Ajouter {comp.contentType === 'vin' ? 'un vin' : comp.contentType === 'viande' ? 'une viande' : 'un fromage'}</span>
+        <div className={`flex-1 flex flex-col items-center justify-center gap-2 ${meta.color} opacity-40 dark:opacity-30 hover:opacity-80 transition-opacity py-4`}>
+          <div className="w-12 h-12 rounded-full border border-dashed border-current flex items-center justify-center text-xl">
+            ＋
+          </div>
+          <span className="text-xs font-bold tracking-wide text-center">Configurer l'emplacement</span>
         </div>
       ) : (
         <>
           {/* Item name */}
-          <h5 className={`font-bold text-sm leading-snug mb-3 truncate ${meta.color}`}>{item.nom}</h5>
+          <h5 className={`font-black text-base leading-snug mb-4 truncate ${meta.color}`}>{item.nom}</h5>
 
           {/* Sensors */}
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            <div className={`p-2 rounded-lg border text-xs ${
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className={`p-3 rounded-xl border transition-colors ${
               isTempOk 
-                ? 'border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/20' 
-                : 'border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20'
+                ? 'border-green-200/70 dark:border-green-950/40 bg-green-50/40 dark:bg-green-950/10' 
+                : 'border-red-200/70 dark:border-red-950/40 bg-red-50/40 dark:bg-red-950/10'
             }`}>
-              <div className="text-slate-550 dark:text-slate-400 uppercase font-bold text-[9px] mb-0.5">Temp</div>
-              <div className={`text-base font-mono font-bold ${isTempOk ? 'text-green-800 dark:text-green-305' : 'text-red-800 dark:text-red-305'}`}>
-                {comp.currentTemp.toFixed(1)}°
+              <div className="text-slate-500 dark:text-slate-400 uppercase font-bold text-[9px] tracking-wider mb-1">Température</div>
+              <div className={`text-lg font-mono font-black ${isTempOk ? 'text-green-800 dark:text-green-400' : 'text-red-800 dark:text-red-400'}`}>
+                {comp.currentTemp.toFixed(1)}<span className="text-xs font-normal">°C</span>
               </div>
-              {targets && <div className="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5">cible {targets.targetTemp}°C</div>}
+              {targets && <div className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 font-semibold">Cible : {targets.targetTemp}°C</div>}
             </div>
-            <div className={`p-2 rounded-lg border text-xs ${
+
+            <div className={`p-3 rounded-xl border transition-colors ${
               isHygroOk 
-                ? 'border-green-200 dark:border-green-900/40 bg-green-50 dark:bg-green-950/20' 
-                : 'border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20'
+                ? 'border-green-200/70 dark:border-green-950/40 bg-green-50/40 dark:bg-green-950/10' 
+                : 'border-red-200/70 dark:border-red-950/40 bg-red-50/40 dark:bg-red-950/10'
             }`}>
-              <div className="text-slate-550 dark:text-slate-400 uppercase font-bold text-[9px] mb-0.5">Hygro</div>
-              <div className={`text-base font-mono font-bold ${isHygroOk ? 'text-green-800 dark:text-green-305' : 'text-red-800 dark:text-red-305'}`}>
-                {comp.currentHumidity.toFixed(1)}%
+              <div className="text-slate-500 dark:text-slate-400 uppercase font-bold text-[9px] tracking-wider mb-1">Hygrométrie</div>
+              <div className={`text-lg font-mono font-black ${isHygroOk ? 'text-green-800 dark:text-green-400' : 'text-red-800 dark:text-red-400'}`}>
+                {comp.currentHumidity.toFixed(1)}<span className="text-xs font-normal">%</span>
               </div>
-              {targets && <div className="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5">cible {targets.targetHygro}%</div>}
+              {targets && <div className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 font-semibold">Cible : {targets.targetHygro}%</div>}
             </div>
           </div>
 
           {/* Footer: unified progress and estimates */}
-          <div className="mt-auto space-y-2">
+          <div className="mt-auto space-y-3">
             {isFinished ? (
-              <div className="w-full text-center bg-green-100 dark:bg-green-950/40 text-green-800 dark:text-green-300 text-[10px] font-bold py-1.5 rounded-lg border border-green-200 dark:border-green-900/40 animate-pulse uppercase">
+              <div className="w-full text-center bg-green-550/10 dark:bg-green-950/20 text-green-700 dark:text-green-400 text-xs font-black py-2 rounded-xl border border-green-250/30 dark:border-green-900/30 animate-pulse uppercase tracking-wider">
                 ✓ Prêt à déguster
               </div>
             ) : (
               <>
                 <div className="flex justify-between items-center text-[10px] font-bold">
-                  <span className="text-slate-505 dark:text-slate-450 uppercase">
+                  <span className="text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     {comp.contentType === 'vin' ? 'Vieillissement' : comp.contentType === 'viande' ? 'Maturation' : 'Affinage'}
                   </span>
-                  <span className={meta.color}>
-                    Prêt à {progressPct.toFixed(0)}%
+                  <span className={`${meta.color} font-black`}>
+                    {progressPct.toFixed(0)}%
                   </span>
                 </div>
                 
-                <div className="w-full bg-slate-105 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                   <div 
                     className={`bg-gradient-to-r ${progressGradients[comp.contentType]} h-1.5 rounded-full transition-all duration-700`} 
                     style={{ width: `${progressPct}%` }}
                   ></div>
                 </div>
 
-                <div className="flex justify-between items-center text-[9px] text-slate-400 dark:text-slate-500 font-medium pt-0.5">
-                  <span className="flex items-center gap-1">
-                    📅 Dégustation :
+                <div className="flex justify-between items-center text-[9px] text-slate-400 dark:text-slate-500 font-medium pt-1">
+                  <span className="flex items-center gap-1 font-semibold">
+                    📅 Prêt le :
                   </span>
-                  <span className="font-semibold font-mono text-slate-605 dark:text-slate-400">
+                  <span className="font-bold font-mono text-slate-700 dark:text-slate-300">
                     {tastingDateStr}
                   </span>
                 </div>
@@ -181,11 +183,11 @@ export default function CompartmentCard({
             )}
 
             {/* Sub-status (Phase information) */}
-            <div className="flex justify-between items-center pt-1 border-t border-slate-100/60 dark:border-slate-800/40 text-[9px]">
-              <span className="text-slate-400 dark:text-slate-500">
-                Mode : {comp.isAutoMode ? 'Auto 🤖' : 'Manuel ⚙️'}
+            <div className="flex justify-between items-center pt-2.5 border-t border-slate-100/60 dark:border-slate-800/40 text-[9px]">
+              <span className="text-slate-400 dark:text-slate-500 font-semibold">
+                Mode : {comp.isAutoMode ? 'Automatique 🤖' : 'Manuel ⚙️'}
               </span>
-              <span className="font-semibold capitalize text-slate-550 dark:text-slate-400">
+              <span className="font-bold capitalize text-slate-600 dark:text-slate-305 bg-slate-50 dark:bg-slate-950 px-2 py-0.5 rounded border border-slate-100 dark:border-slate-850">
                 {comp.contentType === 'vin' ? comp.vinPhase : comp.contentType === 'viande' ? comp.maturePhase : `${comp.preference === 'moyen' ? 'À point' : comp.preference === 'vieux' ? 'Corsé' : 'Jeune'}`}
               </span>
             </div>

@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ContentType } from '../hooks/useSimulationCave';
+import { ContentType, CheeseProfile, ViandeProfile, VinProfile } from '../hooks/useSimulationCave';
 
 interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialType: ContentType;
-  onProductAdded: (newItem: any, type: ContentType) => void;
+  onProductAdded: (newItem: CheeseProfile | ViandeProfile | VinProfile, type: ContentType) => void;
 }
 
 export default function ProductModal({ isOpen, onClose, initialType, onProductAdded }: ProductModalProps) {

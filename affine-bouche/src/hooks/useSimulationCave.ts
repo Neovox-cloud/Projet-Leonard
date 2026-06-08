@@ -202,6 +202,35 @@ export function useSimulationCave(
     return () => clearInterval(interval);
   }, [initialCheeses, initialViandes, initialVins]);
 
+  // Save telemetry on each tick to the database
+  useEffect(() => {
+    if (tick === 0) return;
+    
+    const saveTelemetry = async () => {
+      const device = connectedDevice || 'default';
+      try {
+        await Promise.all(
+          compartments.map(comp => 
+            fetch('/api/telemetry', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                compartmentId: comp.id,
+                deviceName: device,
+                temp: comp.currentTemp,
+                humidity: comp.currentHumidity
+              })
+            })
+          )
+        );
+      } catch (e) {
+        console.error("Failed to post telemetry entry:", e);
+      }
+    };
+
+    saveTelemetry();
+  }, [tick]);
+
   const getStorageKey = () => {
     return connectedDevice 
       ? `affine_bouche_compartments_${connectedDevice}` 
@@ -291,7 +320,10 @@ export function useSimulationCave(
     updateCompartment(compartmentId, { [control]: !activeComp[control] });
   };
 
-  const loadSavedCompartments = (device: string | null = connectedDevice) => {
+  const loadStateAndHistory = async (device: string | null) => {
+    const devName = device || 'default';
+    let baseCompartments = compartments;
+
     if (typeof window !== 'undefined') {
       const key = device 
         ? `affine_bouche_compartments_${device}` 
@@ -301,16 +333,67 @@ export function useSimulationCave(
         try {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length === 6) {
-            setCompartments(parsed);
-            return;
+            baseCompartments = parsed;
           }
         } catch (e) {
-          console.error("Failed to load compartments from localStorage", e);
+          console.error("Failed to parse local storage compartments:", e);
         }
+      } else {
+        baseCompartments = baseCompartments.map(c => ({ ...c, selectedItemId: null, startDate: null }));
       }
     }
-    // Default fallback if no saved data
-    setCompartments(prev => prev.map(c => ({ ...c, selectedItemId: null, startDate: null })));
+
+    try {
+      const merged = await Promise.all(
+        baseCompartments.map(async (comp) => {
+          const res = await fetch(`/api/telemetry?compartmentId=${comp.id}&deviceName=${devName}`);
+          const data = await res.json();
+          if (data.success && data.history && data.history.length > 0) {
+            const latestEntry = data.history[data.history.length - 1];
+            return {
+              ...comp,
+              currentTemp: latestEntry.temp,
+              currentHumidity: latestEntry.humidity,
+              history: data.history,
+            };
+          }
+          
+          // Fallback if no history exists: if an item is selected, start at its target conditions
+          const targets = getTargetConditions(comp, initialCheeses, initialViandes, initialVins);
+          const initTemp = targets ? targets.targetTemp : getDefaultTemp(comp.contentType);
+          const initHygro = targets ? targets.targetHygro : (comp.contentType === 'vin' ? 70 : comp.contentType === 'viande' ? 80 : 85);
+          
+          const finalTemp = comp.selectedItemId ? initTemp : comp.currentTemp;
+          const finalHygro = comp.selectedItemId ? initHygro : comp.currentHumidity;
+
+          return {
+            ...comp,
+            currentTemp: finalTemp,
+            currentHumidity: finalHygro,
+            history: [
+              {
+                time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                temp: finalTemp,
+                humidity: finalHygro
+              }
+            ]
+          };
+        })
+      );
+      setCompartments(merged);
+    } catch (e) {
+      console.error("Failed to load telemetry history:", e);
+      setCompartments(baseCompartments);
+    }
+  };
+
+  // Load telemetry history on connectedDevice change or mount
+  useEffect(() => {
+    loadStateAndHistory(connectedDevice);
+  }, [connectedDevice]);
+
+  const loadSavedCompartments = (device: string | null = connectedDevice) => {
+    loadStateAndHistory(device);
   };
 
   const clearCompartmentsState = () => {
