@@ -28,7 +28,7 @@ export default function Home() {
               Configurateur
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">
-              Dashboard (MVP)
+              Dashboard
             </Link>
             <Link href="/configurateur" className="bg-amber-900 hover:bg-amber-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" />

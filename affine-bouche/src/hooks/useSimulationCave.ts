@@ -117,7 +117,7 @@ export function useSimulationCave(
   initialVins: VinProfile[]
 ) {
   const [compartments, setCompartments] = useState<CompartmentState[]>(
-    Array.from({ length: 6 }).map((_, index) => ({
+    Array.from({ length: 5 }).map((_, index) => ({
       id: index + 1,
       contentType: 'fromage',
       selectedItemId: null,
@@ -146,7 +146,7 @@ export function useSimulationCave(
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length === 6) {
+          if (Array.isArray(parsed) && parsed.length === 5) {
             setCompartments(parsed);
           }
         } catch (e) {

@@ -674,10 +674,14 @@ export default function Dashboard({
         {/* ── Right Panel: Grid ── */}
         <div className="xl:col-span-8">
           <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-            <h2 className="text-xl font-bold mb-6 text-amber-900">Cave d'Affinage — 6 Compartiments</h2>
+            <h2 className="text-xl font-bold mb-6 text-amber-900">Cave d'Affinage — 5 Zones</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 relative">
               <div className="absolute inset-0 border-[8px] border-amber-900/10 rounded-xl pointer-events-none z-0"></div>
-              {compartments.map(comp => renderGridCard(comp))}
+              {compartments.map((comp, idx) => (
+                <div key={comp.id} className={idx === 4 ? "md:col-span-2" : ""}>
+                  {renderGridCard(comp)}
+                </div>
+              ))}
             </div>
           </div>
         </div>
