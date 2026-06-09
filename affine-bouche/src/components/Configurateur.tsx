@@ -26,6 +26,7 @@ import {
   FileText
 } from 'lucide-react';
 import Link from 'next/link';
+import ThemeToggle from './ThemeToggle';
 
 // Definitions matching implementation plan
 export type FormatType = 'famille' | 'compact' | 'professionnel';
@@ -463,28 +464,31 @@ export default function Configurateur() {
   }, [modules]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-amber-200 py-8 px-4 md:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-amber-200 py-8 px-4 md:px-8 relative overflow-hidden transition-colors">
       
       {/* Background radial flares matching homepage */}
-      <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-amber-100/50 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 right-1/4 translate-x-1/2 w-[600px] h-[600px] bg-amber-100/30 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-amber-100/50 dark:bg-amber-900/10 rounded-full blur-3xl -z-10"></div>
+      <div className="absolute bottom-0 right-1/4 translate-x-1/2 w-[600px] h-[600px] bg-amber-100/30 dark:bg-amber-900/5 rounded-full blur-3xl -z-10"></div>
 
       <div className="max-w-7xl mx-auto">
         {/* Header Navigation */}
-        <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-200">
-          <Link href="/" className="flex items-center gap-2 text-sm text-slate-650 hover:text-amber-900 transition group">
+        <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-200 dark:border-slate-800 transition-colors">
+          <Link href="/" className="flex items-center gap-2 text-sm text-slate-650 dark:text-slate-400 hover:text-amber-900 dark:hover:text-amber-300 transition group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Retour à l'accueil
           </Link>
           <div className="text-center">
-            <span className="text-amber-800 text-xs font-bold uppercase tracking-widest block mb-1">Atelier L'Affine Bouche</span>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-amber-900">Configurateur de Cave</h1>
+            <span className="text-amber-800 dark:text-amber-500 text-xs font-bold uppercase tracking-widest block mb-1">Atelier L'Affine Bouche</span>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-amber-900 dark:text-amber-500">Configurateur de Cave</h1>
           </div>
-          <div className="hidden md:flex gap-4 items-center">
-            <span className="text-xs text-slate-650">Des questions ? Contactez-nous à</span>
-            <a href="mailto:affinebouche@gmail.com" className="px-3 py-1 bg-amber-100 border border-amber-900/20 text-amber-900 text-xs font-semibold rounded-full hover:bg-amber-205 transition-colors">
-              affinebouche@gmail.com
-            </a>
+          <div className="flex gap-4 items-center">
+            <ThemeToggle />
+            <div className="hidden md:flex gap-4 items-center">
+              <span className="text-xs text-slate-650 dark:text-slate-400">Des questions ?</span>
+              <a href="mailto:affinebouche@gmail.com" className="px-3 py-1 bg-amber-100 dark:bg-amber-900/20 border border-amber-900/20 dark:border-amber-800/20 text-amber-900 dark:text-amber-450 text-xs font-semibold rounded-full hover:bg-amber-205 dark:hover:bg-amber-800 transition-colors">
+                affinebouche@gmail.com
+              </a>
+            </div>
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ThermometerSun,
@@ -123,8 +123,8 @@ const specs: SpecItem[] = [
     bg: 'bg-stone-50',
     border: 'border-stone-100',
     title: 'Format',
-    detail: "40 × 40 × 40 cm par bloc. Les blocs s'empilent ou se disposent côte à côte.",
-    explanation: "Chaque bloc est doté de connecteurs magnétiques rapides sur les faces supérieure et latérales. Ces connecteurs transmettent à la fois l'alimentation électrique et les données de communication (bus de données). Vous pouvez ainsi empiler jusqu'à 4 modules verticalement ou horizontalement avec un seul cordon d'alimentation principal branché sur la prise murale.",
+    detail: "50 × 50 × 50 cm (extérieur) / 40 × 40 × 40 cm (intérieur utile). Empilables et modulables.",
+    explanation: "Chaque bloc mesure 50 cm de côté à l'extérieur. Les parois intègrent 5 cm d'isolant haute densité (mousse polyuréthane tropicalisée), ce qui offre un volume utile interne parfait de 40 × 40 × 40 cm. Ils intègrent des connecteurs magnétiques rapides sur les faces supérieure et latérales pour s'empiler ou s'assembler facilement sans câbles apparents.",
   },
   {
     icon: Volume2,
@@ -187,24 +187,38 @@ const usages = ['Fromages', 'Vins', 'Viandes maturées', 'Charcuteries'];
 export default function ProductDescription() {
   const [selectedSpec, setSelectedSpec] = useState<SpecItem | null>(null);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedSpec(null);
+      }
+    };
+    if (selectedSpec) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedSpec]);
+
   return (
     <section
       id="product-description"
-      className="py-24 px-6 bg-gradient-to-b from-white via-amber-50/30 to-white relative overflow-hidden"
+      className="py-24 px-6 bg-gradient-to-b from-white via-amber-50/30 to-white dark:from-slate-950 dark:via-amber-950/5 dark:to-slate-950 relative overflow-hidden transition-colors"
     >
       {/* Fond décoratif */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute left-0 top-1/4 w-[600px] h-[600px] rounded-full bg-amber-100/40 blur-3xl" />
-        <div className="absolute right-0 bottom-0 w-[400px] h-[400px] rounded-full bg-teal-100/30 blur-3xl" />
+        <div className="absolute left-0 top-1/4 w-[600px] h-[600px] rounded-full bg-amber-100/40 dark:bg-amber-900/5 blur-3xl" />
+        <div className="absolute right-0 bottom-0 w-[400px] h-[400px] rounded-full bg-teal-100/30 dark:bg-teal-900/5 blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto">
 
         {/* ── Badge ingénieurs ── */}
         <div id="ecam-engineers" className="flex justify-center mb-10">
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-amber-300/60 bg-white shadow-md shadow-amber-100">
-            <GraduationCap className="w-5 h-5 text-amber-700 shrink-0" />
-            <span className="text-sm font-semibold text-amber-800 tracking-wide">
+          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-amber-300/60 dark:border-amber-900/30 bg-white dark:bg-slate-900 shadow-md dark:shadow-none transition-colors">
+            <GraduationCap className="w-5 h-5 text-amber-700 dark:text-amber-500 shrink-0" />
+            <span className="text-sm font-semibold text-amber-800 dark:text-amber-400 tracking-wide">
               Conçu par des ingénieurs ECAM LaSalle Lyon
             </span>
           </div>
@@ -212,13 +226,13 @@ export default function ProductDescription() {
 
         {/* ── En-tête produit ── */}
         <header className="text-center mb-16 space-y-5">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-600">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-600 dark:text-amber-500">
             Cave Gastronomique Connectée
           </p>
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
+          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             L'Affine Bouche
           </h2>
-          <p className="text-2xl md:text-3xl font-light italic text-amber-700">
+          <p className="text-2xl md:text-3xl font-light italic text-amber-700 dark:text-amber-500">
             "L'art de l'affinage, enfin à portée de main."
           </p>
 
@@ -227,7 +241,7 @@ export default function ProductDescription() {
             {usages.map((u) => (
               <span
                 key={u}
-                className="px-4 py-1.5 rounded-full bg-amber-100 text-amber-800 text-sm font-medium border border-amber-200"
+                className="px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 text-sm font-medium border border-amber-200 dark:border-amber-900/30 transition-colors"
               >
                 {u}
               </span>
@@ -237,7 +251,7 @@ export default function ProductDescription() {
 
         {/* ── Description courte ── */}
         <article className="max-w-3xl mx-auto mb-20 text-center">
-          <p className="text-lg text-slate-600 leading-relaxed">
+          <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
             L'Affine Bouche est une cave d'affinage gastronomique modulaire et connectée, conçue pour
             reproduire les conditions des meilleures caves artisanales. Elle permet de conserver, affiner
             et maturer fromages, viandes, charcuteries et vins dans un microclimat parfaitement maîtrisé,
@@ -249,8 +263,8 @@ export default function ProductDescription() {
         {/* ── Spécifications techniques ── */}
         <div className="mb-24">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-slate-900 mb-2">Spécifications techniques</h3>
-            <p className="text-slate-500 text-sm mb-4">Cliquez sur un module pour comprendre sa technologie et son principe de fonctionnement.</p>
+            <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Spécifications techniques</h3>
+            <p className="text-slate-505 dark:text-slate-400 text-sm mb-4">Cliquez sur un module pour comprendre sa technologie et son principe de fonctionnement.</p>
             <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-amber-800 rounded-full mx-auto" />
           </div>
 
@@ -261,17 +275,17 @@ export default function ProductDescription() {
                 <div
                   key={spec.title}
                   onClick={() => setSelectedSpec(spec)}
-                  className="group flex gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-amber-300 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-205 w-full sm:w-[320px] md:w-[280px] lg:w-[300px] xl:w-[280px] flex-grow max-w-[360px] cursor-pointer"
+                  className="group flex gap-4 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md hover:border-amber-300 dark:hover:border-amber-600 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-205 w-full sm:w-[320px] md:w-[280px] lg:w-[300px] xl:w-[280px] flex-grow max-w-[360px] cursor-pointer"
                 >
                   <div
-                    className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-amber-50 border border-amber-100 group-hover:scale-110 transition-transform"
+                    className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-amber-50 dark:bg-amber-950/45 border border-amber-100 dark:border-amber-900/35 group-hover:scale-110 transition-transform"
                   >
-                    <Icon className="w-5 h-5 text-amber-700" />
+                    <Icon className="w-5 h-5 text-amber-700 dark:text-amber-500" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-slate-800 text-sm leading-snug mb-1">{spec.title}</p>
-                    <p className="text-slate-500 text-xs leading-relaxed">{spec.detail}</p>
-                    <span className="text-[10px] text-amber-900 font-bold mt-2 inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <p className="font-semibold text-slate-800 dark:text-slate-205 text-sm leading-snug mb-1">{spec.title}</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{spec.detail}</p>
+                    <span className="text-[10px] text-amber-900 dark:text-amber-400 font-bold mt-2 inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       En savoir plus ➔
                     </span>
                   </div>
@@ -367,41 +381,41 @@ export default function ProductDescription() {
 
       {/* ── Premium Tech Detail Explanation Modal ── */}
       {selectedSpec && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 md:p-8 max-w-lg w-full relative animate-in zoom-in-95 duration-200 space-y-5">
+        <div className="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/75 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 md:p-8 max-w-lg w-full relative animate-in zoom-in-95 duration-200 space-y-5 transition-colors">
             {/* Close Button */}
             <button
               onClick={() => setSelectedSpec(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors text-xl font-bold p-2 cursor-pointer"
+              className="absolute top-4 right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors text-xl font-bold p-2 cursor-pointer"
             >
               ✕
             </button>
 
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-50 border border-amber-100 shrink-0">
-                {React.createElement(selectedSpec.icon, { className: "w-6 h-6 text-amber-700" })}
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/20 shrink-0">
+                {React.createElement(selectedSpec.icon, { className: "w-6 h-6 text-amber-700 dark:text-amber-500" })}
               </div>
               <div>
-                <h4 className="text-lg font-black tracking-tight text-slate-900">{selectedSpec.title}</h4>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Fiche d'explication technologique</p>
+                <h4 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">{selectedSpec.title}</h4>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Fiche d'explication technologique</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-700 leading-relaxed bg-amber-50/50 border border-amber-900/5 p-4 rounded-2xl italic font-medium">
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-amber-50/50 dark:bg-amber-950/20 border border-amber-900/5 dark:border-amber-800/10 p-4 rounded-2xl italic font-medium animate-pulse">
               "{selectedSpec.detail}"
             </p>
 
             <div className="space-y-2">
-              <h5 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Comment ça fonctionne ?</h5>
-              <p className="text-xs text-slate-600 leading-relaxed text-justify">
+              <h5 className="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">Comment ça fonctionne ?</h5>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed text-justify">
                 {selectedSpec.explanation}
               </p>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 flex justify-end">
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
               <button
                 onClick={() => setSelectedSpec(null)}
-                className="bg-amber-900 hover:bg-amber-800 text-white font-bold text-xs px-6 py-3 rounded-xl transition-all shadow-md shadow-amber-900/10 cursor-pointer"
+                className="bg-amber-900 dark:bg-amber-800 hover:bg-amber-800 dark:hover:bg-amber-705 text-white font-bold text-xs px-6 py-3 rounded-xl transition-all shadow-md shadow-amber-900/10 cursor-pointer"
               >
                 Compris !
               </button>
