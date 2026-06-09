@@ -29,7 +29,7 @@ export default function Home() {
               Configurateur
             </Link>
             <Link href="/dashboard" className="text-sm font-medium text-slate-650 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-500 transition">
-              Dashboard (MVP)
+              Dashboard
             </Link>
             <ThemeToggle />
             <Link href="/configurateur" className="bg-amber-900 hover:bg-amber-800 dark:bg-amber-800 dark:hover:bg-amber-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">

@@ -331,9 +331,10 @@ export default function Configurateur() {
   const handleAddModule = (type: ModuleType) => {
     if (format !== 'famille') return;
     
-    // Business validation rule check: Cannot exceed 6 modules
-    if (modules.length >= 6) {
-      notify('Limite de blocs atteinte (maximum 6 blocs au total pour des raisons de puissance électrique).', 'error');
+    // Business validation rule check: Cannot exceed 5 additional modules
+    const additionalCount = modules.filter(m => m.type !== 'maitre').length;
+    if (additionalCount >= 5) {
+      notify('Limite de blocs atteinte (maximum 5 blocs d\'affinage supplémentaires pour des raisons de puissance électrique).', 'error');
       return;
     }
 
@@ -361,8 +362,9 @@ export default function Configurateur() {
   const handleAddModuleToColumn = (columnIdx: number) => {
     if (format !== 'famille') return;
 
-    if (modules.length >= 6) {
-      notify('Limite de blocs atteinte (maximum 6 blocs au total).', 'error');
+    const additionalCount = modules.filter(m => m.type !== 'maitre').length;
+    if (additionalCount >= 5) {
+      notify('Limite de blocs atteinte (maximum 5 blocs d\'affinage supplémentaires).', 'error');
       return;
     }
 
@@ -557,48 +559,48 @@ export default function Configurateur() {
               {/* Option 1: Modular Family */}
               <div 
                 onClick={() => handleSelectFormat('famille')}
-                className="group relative bg-white border border-slate-200 hover:border-amber-900/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
+                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-900/50 dark:hover:border-amber-500/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
               >
-                <div className="absolute top-5 right-5 bg-amber-100 text-amber-900 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
+                <div className="absolute top-5 right-5 bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
                   Populaire & Évolutif
                 </div>
                 
                 <div className="space-y-6">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-900 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Layers3 className="w-7 h-7" />
                   </div>
                   
                   <div>
-                    <h3 className="text-2xl font-bold text-amber-900 group-hover:text-amber-700 transition-colors mb-2">
+                    <h3 className="text-2xl font-bold text-amber-900 dark:text-amber-500 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors mb-2">
                       Format 1 : La Cave "Famille"
                     </h3>
-                    <p className="text-slate-600 text-sm leading-relaxed">
+                    <p className="text-slate-600 dark:text-slate-350 text-sm leading-relaxed">
                       Un écosystème entièrement sur-mesure et empilable. Vous commencez obligatoirement par notre <strong>Bloc Maître</strong> (la centrale intelligente), puis vous ajoutez les modules d'affinage indépendants de votre choix au gré de vos besoins.
                     </p>
                   </div>
 
                   <ul className="space-y-3 pt-2">
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Modulaire :</strong> Empilez ou retirez des blocs à tout moment.</span>
                     </li>
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Jusqu'à 5 zones autonomes :</strong> Contrôle individuel de température/hygrométrie par bloc.</span>
                     </li>
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Bloc Maître requis :</strong> Le socle mécanique et intelligent (350 €).</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="pt-8 mt-8 border-t border-slate-100 flex items-center justify-between">
+                <div className="pt-8 mt-8 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-slate-500 block uppercase font-semibold">À partir de</span>
-                    <span className="text-2xl font-black text-amber-900">500 € <span className="text-xs font-normal text-slate-500">TTC</span></span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-semibold">À partir de</span>
+                    <span className="text-2xl font-black text-amber-900 dark:text-amber-500">500 € <span className="text-xs font-normal text-slate-500 dark:text-slate-400">TTC</span></span>
                   </div>
-                  <div className="px-5 py-2.5 bg-amber-900 group-hover:bg-amber-800 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
+                  <div className="px-5 py-2.5 bg-amber-900 dark:bg-amber-800 group-hover:bg-amber-800 dark:hover:bg-amber-700 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
                     Configurer
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -608,48 +610,48 @@ export default function Configurateur() {
               {/* Option 2: Compact */}
               <div 
                 onClick={() => handleSelectFormat('compact')}
-                className="group relative bg-white border border-slate-200 hover:border-amber-900/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
+                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-900/50 dark:hover:border-amber-500/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
               >
-                <div className="absolute top-5 right-5 bg-slate-100 text-slate-655 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
+                <div className="absolute top-5 right-5 bg-slate-100 dark:bg-slate-800 text-slate-655 dark:text-slate-300 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
                   Tout-en-un Clé en main
                 </div>
                 
                 <div className="space-y-6">
-                  <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Layers className="w-7 h-7" />
                   </div>
                   
                   <div>
-                    <h3 className="text-2xl font-bold text-amber-900 group-hover:text-amber-700 transition-colors mb-2">
+                    <h3 className="text-2xl font-bold text-amber-900 dark:text-amber-500 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors mb-2">
                       Format 2 : La Cave "Compact"
                     </h3>
-                    <p className="text-slate-600 text-sm leading-relaxed">
+                    <p className="text-slate-600 dark:text-slate-350 text-sm leading-relaxed">
                       L'essentiel de l'affinage dans un seul bloc élégant et économique. La centrale intelligente est directement intégrée dans l'unique chambre d'affinage. Idéal pour les appartements ou les petits budgets.
                     </p>
                   </div>
 
                   <ul className="space-y-3 pt-2">
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Aucun module additionnel :</strong> Bloc d'une seule pièce non extensible.</span>
                     </li>
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Usage configurable :</strong> Ajustez pour Fromage, Vin ou Viande mature.</span>
                     </li>
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Prix attractif tout compris :</strong> 500 € tout inclus.</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="pt-8 mt-8 border-t border-slate-100 flex items-center justify-between">
+                <div className="pt-8 mt-8 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-slate-500 block uppercase font-semibold">Prix unique</span>
-                    <span className="text-2xl font-black text-amber-900">500 € <span className="text-xs font-normal text-slate-500">TTC</span></span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-semibold">Prix unique</span>
+                    <span className="text-2xl font-black text-amber-900 dark:text-amber-500">500 € <span className="text-xs font-normal text-slate-500 dark:text-slate-400">TTC</span></span>
                   </div>
-                  <div className="px-5 py-2.5 bg-amber-900 group-hover:bg-amber-800 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
+                  <div className="px-5 py-2.5 bg-amber-900 dark:bg-amber-800 group-hover:bg-amber-800 dark:hover:bg-amber-700 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
                     Configurer
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -659,7 +661,7 @@ export default function Configurateur() {
               {/* Option 3: Professionnel */}
               <div 
                 onClick={() => handleSelectFormat('professionnel')}
-                className="group relative bg-white border border-slate-200 hover:border-amber-900/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
+                className="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-900/50 dark:hover:border-amber-500/50 rounded-3xl p-8 cursor-pointer transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-900/5 flex flex-col justify-between shadow-sm"
               >
                 <div className="absolute top-5 right-5 bg-amber-900 border border-amber-800 text-amber-100 px-3 py-1 rounded-full text-xs font-semibold tracking-wider">
                   Sur Devis Uniquement
@@ -671,36 +673,36 @@ export default function Configurateur() {
                   </div>
                   
                   <div>
-                    <h3 className="text-2xl font-bold text-amber-900 group-hover:text-amber-700 transition-colors mb-2">
+                    <h3 className="text-2xl font-bold text-amber-900 dark:text-amber-500 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors mb-2">
                       Format 3 : Cave "Professionnelle"
                     </h3>
-                    <p className="text-slate-600 text-sm leading-relaxed">
+                    <p className="text-slate-600 dark:text-slate-350 text-sm leading-relaxed">
                       Conçue spécifiquement pour les restaurateurs, crémiers-fromagers, bouchers et vignerons. Une solution sur-mesure de grande capacité adaptée à vos contraintes d'espace et de volume.
                     </p>
                   </div>
 
                   <ul className="space-y-3 pt-2">
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Volumes industriels :</strong> Stockage et affinage optimisés de 50 à +500 kg.</span>
                     </li>
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Régulations Pro :</strong> Contrôle tactile multi-zones d'une précision chirurgicale.</span>
                     </li>
-                    <li className="flex items-start gap-2.5 text-sm text-slate-750">
+                    <li className="flex items-start gap-2.5 text-sm text-slate-750 dark:text-slate-300">
                       <span className="text-amber-600 font-bold mt-0.5">✓</span>
                       <span><strong>Étude technique personnalisée :</strong> Installation et configuration par nos experts.</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="pt-8 mt-8 border-t border-slate-100 flex items-center justify-between">
+                <div className="pt-8 mt-8 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-slate-500 block uppercase font-semibold">Tarification</span>
-                    <span className="text-2xl font-black text-amber-900 font-bold">Sur Devis</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 block uppercase font-semibold">Tarification</span>
+                    <span className="text-2xl font-black text-amber-900 dark:text-amber-500 font-bold">Sur Devis</span>
                   </div>
-                  <div className="px-5 py-2.5 bg-amber-950 group-hover:bg-amber-900 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
+                  <div className="px-5 py-2.5 bg-amber-950 dark:bg-amber-905 group-hover:bg-amber-900 text-white rounded-xl text-sm font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-900/10">
                     Demander un Devis
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -749,7 +751,7 @@ export default function Configurateur() {
                     return (
                       <div key={colIdx} className="flex flex-col-reverse items-center gap-1.5 w-1/3 max-w-[110px] min-h-[300px] justify-start">
                         {/* Standard add button if column has space */}
-                        {format === 'famille' && colModules.length < 3 && modules.length < 6 && (
+                        {format === 'famille' && colModules.length < 3 && modules.filter(m => m.type !== 'maitre').length < 5 && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();

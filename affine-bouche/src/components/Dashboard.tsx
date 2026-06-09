@@ -567,7 +567,7 @@ export default function Dashboard({
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b border-slate-100 dark:border-slate-850 pb-5">
               <div>
                 <h2 className="text-lg font-black text-amber-900 dark:text-amber-500 uppercase tracking-wide">Cave d'Affinage</h2>
-                <p className="text-xs text-slate-450 dark:text-slate-500 mt-1">Gérez individuellement les 6 compartiments indépendants</p>
+                <p className="text-xs text-slate-450 dark:text-slate-500 mt-1">Gérez individuellement les 5 compartiments indépendants</p>
               </div>
               <button
                 disabled={bluetoothState !== 'connected'}

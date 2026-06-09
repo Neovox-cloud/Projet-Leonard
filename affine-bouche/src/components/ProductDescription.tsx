@@ -298,7 +298,7 @@ export default function ProductDescription() {
         {/* ── Trois gammes ── */}
         <div className="mb-20">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-slate-900 mb-2">Trois gammes</h3>
+            <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Trois gammes</h3>
             <div className="w-16 h-1 bg-gradient-to-r from-amber-500 to-amber-800 rounded-full mx-auto" />
           </div>
 
@@ -308,15 +308,15 @@ export default function ProductDescription() {
               return (
                 <div
                   key={range.name}
-                  className={`relative flex flex-col rounded-3xl border-2 ${range.accentBorder} ${range.accentBg} p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${
+                  className={`relative flex flex-col rounded-3xl border-2 ${range.accentBorder} dark:border-slate-800 ${range.accentBg} dark:bg-slate-900 p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${
                     range.featured
-                      ? 'ring-2 ring-amber-500 ring-offset-4 shadow-xl shadow-amber-100'
+                      ? 'ring-2 ring-amber-500 ring-offset-4 dark:ring-offset-slate-950 shadow-xl shadow-amber-100 dark:shadow-none'
                       : ''
                   }`}
                 >
                   {range.featured && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-800 text-white text-xs font-bold shadow-lg shadow-amber-200 tracking-wide">
+                      <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-800 text-white text-xs font-bold shadow-lg shadow-amber-200 dark:shadow-none tracking-wide">
                         <Star className="w-3 h-3 fill-current" />
                         Populaire
                       </span>
@@ -326,22 +326,26 @@ export default function ProductDescription() {
                   {/* Gradient line top */}
                   <div className={`h-1 w-16 rounded-full bg-gradient-to-r ${range.accent} mb-6`} />
 
-                  <div className={`w-14 h-14 rounded-2xl ${range.iconBg} flex items-center justify-center mb-5`}>
-                    <Icon className={`w-7 h-7 ${range.iconColor}`} />
+                  <div className={`w-14 h-14 rounded-2xl ${range.iconBg} ${
+                    range.name === 'Compact' ? 'dark:bg-slate-800' : range.name === 'Familiale' ? 'dark:bg-amber-950/40' : 'dark:bg-amber-900/30'
+                  } flex items-center justify-center mb-5`}>
+                    <Icon className={`w-7 h-7 ${range.iconColor} ${
+                      range.name === 'Compact' ? 'dark:text-slate-100 font-bold' : range.name === 'Familiale' ? 'dark:text-amber-400' : 'dark:text-amber-300'
+                    }`} />
                   </div>
 
-                  <h4 className="text-2xl font-extrabold text-slate-900 mb-1">{range.name}</h4>
+                  <h4 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-1">{range.name}</h4>
                   <p className={`text-sm font-semibold mb-4 bg-gradient-to-r ${range.accent} bg-clip-text text-transparent`}>
                     {range.tagline}
                   </p>
-                  <p className="text-slate-600 text-sm leading-relaxed flex-1">{range.description}</p>
+                  <p className="text-slate-600 dark:text-slate-350 text-sm leading-relaxed flex-1">{range.description}</p>
 
                   <Link
                     href={range.link}
                     className={`mt-8 flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold text-sm transition-all group ${
                       range.featured
                         ? `bg-gradient-to-r ${range.accent} text-white shadow-lg hover:opacity-90`
-                        : 'border-2 border-slate-200 bg-white text-slate-700 hover:border-amber-300 hover:bg-amber-50'
+                        : 'border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-350 hover:border-amber-300 dark:hover:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950/20'
                     }`}
                   >
                     {range.name === 'Professionnelle' ? 'Demander un devis' : 'Configurer'}
