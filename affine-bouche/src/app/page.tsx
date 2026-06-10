@@ -2,8 +2,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ThermometerSun, Droplets, Wind, ShieldCheck, ChevronRight, ShoppingCart } from 'lucide-react';
 import ProductDescription from '@/components/ProductDescription';
+import { getSession } from '@/lib/auth';
+import LogoutButton from '@/components/LogoutButton';
+import ThemeToggle from '@/components/ThemeToggle';
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-amber-200">
       {/* Navigation */}
@@ -30,6 +34,14 @@ export default function Home() {
             <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-amber-700 transition">
               Dashboard
             </Link>
+            <ThemeToggle />
+            {session ? (
+              <LogoutButton />
+            ) : (
+              <Link href="/login" className="text-sm font-medium text-amber-700 hover:text-amber-900 transition flex items-center gap-1">
+                Se connecter
+              </Link>
+            )}
             <Link href="/configurateur" className="bg-amber-900 hover:bg-amber-800 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-lg shadow-amber-900/20 flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" />
               Configurer

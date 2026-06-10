@@ -256,12 +256,33 @@ export function useSimulationCave(
     updateCompartment(compartmentId, { [control]: !activeComp[control] });
   };
 
+  const clearAllCompartments = () => {
+    setCompartments(prev => {
+      const updated = prev.map(c => ({ ...c, selectedItemId: null, startDate: null }));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('affine_bouche_compartments', JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const loadSavedCompartments = (deviceName: string) => {
+    // Placeholder
+  };
+
+  const clearCompartmentsState = () => {
+    // Placeholder
+  };
+
   return {
     compartments,
     updateCompartment,
     handleContentTypeChange,
     assignItem,
     changePreference,
-    toggleControl
+    toggleControl,
+    clearAllCompartments,
+    loadSavedCompartments,
+    clearCompartmentsState
   };
 }

@@ -82,3 +82,13 @@ model TelemetryEntry {
 
   @@index([deviceName, compartmentId, timestamp])
 }
+
+// Modèle Utilisateur pour l'authentification
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Mot de passe haché
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
