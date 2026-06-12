@@ -31,8 +31,7 @@ export default function LoginPage() {
       }
 
       // Rediriger vers le dashboard après connexion
-      router.push('/dashboard');
-      router.refresh();
+      window.location.href = '/dashboard';
     } catch (err: any) {
       setError(err.message);
     } finally {
